@@ -1,7 +1,7 @@
 {
-  "short_name": "PSI Cilegon",
-  "name": "Dashboard PSI Kota Cilegon",
-  "description": "Aplikasi Dashboard Resmi PSI Kota Cilegon",
+  "short_name": "MODAL BBS",
+  "name": "Dashboard BBS",
+  "description": "MODAL BBS",
   "start_url": "https://yefryza.github.io/KAS_BBS/",
   "scope": "https://yefryza.github.io/KAS_BBS/",
   "display": "standalone",
