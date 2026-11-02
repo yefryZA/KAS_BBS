@@ -4,6 +4,8 @@
   "description": "MODAL BBS",
   "start_url": "https://yefryza.github.io/KAS_BBS/",
   "scope": "https://yefryza.github.io/KAS_BBS/",
+  "start_url": "https://yefryza.github.io/KAS_BBS/Modal_BBS.html",
+  "scope": "https://yefryza.github.io/KAS_BBS/Modal_BBS.html",
   "display": "standalone",
   "background_color": "#F8FAFC",
   "theme_color": "#E50914",
