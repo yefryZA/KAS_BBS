@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kas Mobile</title>
+    <title>Kas Mobile - PT. BBS</title>
 
     <!-- Warna status bar / address bar di browser mobile -->
-    <meta name="theme-color" content="#E50914">
+    <meta name="theme-color" content="#0F172A">
 
     <!-- Link ke file Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -21,6 +21,44 @@
 </head>
 <body class="bg-slate-900 text-slate-100 antialiased min-h-screen p-4 md:p-8">
 
+    <!-- ========================================== -->
+    <!-- MODAL POPUP PASSWORD / OTENTIKASI -->
+    <!-- ========================================== -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700/80 p-6 md:p-8 rounded-2xl shadow-2xl max-w-sm w-full space-y-6 text-center">
+            
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold text-white tracking-tight">Otentikasi Keuangan</h2>
+                <p class="text-xs text-slate-400 mt-1">Masukkan PIN / Password akses PT. BBS</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Password Keuangan</label>
+                    <input type="password" id="inputPassword" required placeholder="••••••••" class="w-full border border-slate-700 bg-slate-900/90 text-white placeholder-slate-500 px-4 py-3 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-center tracking-widest text-lg font-bold">
+                    
+                    <!-- Pesan Error Password Salah -->
+                    <p id="loginError" class="hidden text-xs text-rose-400 mt-2 font-medium text-center">⚠️ Password salah. Silakan coba lagi!</p>
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-3 rounded-xl transition shadow-lg text-sm">
+                    🔓 Masuk Aplikasi
+                </button>
+            </form>
+
+            <p class="text-[11px] text-slate-500">Sistem Keuangan Terkunci Otomatis</p>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- UTAMA APLIKASI KAS -->
+    <!-- ========================================== -->
     <div class="max-w-6xl mx-auto space-y-6">
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-800/90 p-6 rounded-2xl shadow-lg border border-slate-700/80">
@@ -44,6 +82,10 @@
                     <input type="text" inputmode="numeric" id="inputModalAwal" disabled placeholder="0" class="w-36 px-2.5 py-1 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-right font-semibold text-sm bg-slate-800 text-slate-400 cursor-not-allowed">
                     <button id="btnUnlockModal" onclick="unlockModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition">🔒 Buka Kunci</button>
                 </div>
+                <!-- Tombol Kunci Ulang / Lock System -->
+                <button onclick="lockApp()" title="Kunci Sistem" class="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white p-2.5 rounded-xl border border-slate-600 transition">
+                    🔒
+                </button>
             </div>
         </div>
 
@@ -185,6 +227,48 @@
             if (!formattedStr) return 0;
             return parseFloat(String(formattedStr).replace(/,/g, '')) || 0;
         };
+
+
+        // UBAH PASSWORD APLIKASI DI SINI:
+        const PASSWORD_KEUANGAN = "BBS2026";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const loginModal = document.getElementById("loginModal");
+            const loginForm = document.getElementById("loginForm");
+            const inputPassword = document.getElementById("inputPassword");
+            const loginError = document.getElementById("loginError");
+
+            // Cek apakah user sudah memasukkan password dalam sesi browser saat ini
+            if (sessionStorage.getItem("kas_authenticated") === "true") {
+                loginModal.classList.add("hidden");
+            } else {
+                loginModal.classList.remove("hidden");
+                inputPassword.focus();
+            }
+
+            // Verifikasi Form Password
+            loginForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                if (inputPassword.value === PASSWORD_KEUANGAN) {
+                    sessionStorage.setItem("kas_authenticated", "true");
+                    loginModal.classList.add("hidden");
+                    loginError.classList.add("hidden");
+                    inputPassword.value = "";
+                } else {
+                    loginError.classList.remove("hidden");
+                    inputPassword.value = "";
+                    inputPassword.focus();
+                }
+            });
+        });
+
+        // Fungsi Kunci Ulang Manual (Tombol Gembok)
+        function lockApp() {
+            sessionStorage.removeItem("kas_authenticated");
+            const loginModal = document.getElementById("loginModal");
+            loginModal.classList.remove("hidden");
+            document.getElementById("inputPassword").focus();
+        }
 
         // 1. UPDATE WARNA DROPDOWN DINAMIS
         const txTypeSelect = document.getElementById('txType');
