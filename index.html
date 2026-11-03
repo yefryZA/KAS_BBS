@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kas Mobile</title>
+    <title>Kas Mobile - PT. BBS</title>
 
     <!-- Warna status bar / address bar di browser mobile -->
-    <meta name="theme-color" content="#E50914">
+    <meta name="theme-color" content="#111827">
 
     <!-- Link ke file Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -21,6 +21,43 @@
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-4 pb-12 select-none">
 
+    <!-- ========================================== -->
+    <!-- MODAL POPUP PASSWORD / OTENTIKASI MOBILE -->
+    <!-- ========================================== -->
+    <div id="loginModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-800 border border-gray-700 p-6 rounded-2xl shadow-2xl max-w-xs w-full space-y-5 text-center">
+            
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+
+            <div>
+                <h2 class="text-lg font-bold text-white">Kas Mobile PT. BBS</h2>
+                <p class="text-xs text-gray-400 mt-1">Masukkan Password Akses Keuangan</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4 text-left">
+                <div>
+                    <input type="password" id="inputPassword" required placeholder="••••••••" class="w-full bg-gray-900 border border-gray-700 text-white placeholder-gray-500 px-4 py-3 rounded-xl focus:outline-none focus:border-blue-500 text-center tracking-widest text-lg font-bold">
+                    
+                    <!-- Pesan Error Password Salah -->
+                    <p id="loginError" class="hidden text-[11px] text-red-400 mt-2 font-semibold text-center">⚠️ Password salah. Coba lagi!</p>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-bold py-3 rounded-xl transition shadow-lg text-sm">
+                    🔓 Masuk Kas Mobile
+                </button>
+            </form>
+
+            <p class="text-[10px] text-gray-500">Sistem Keuangan Terkunci Otomatis</p>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- UTAMA APLIKASI KAS MOBILE -->
+    <!-- ========================================== -->
     <div class="max-w-md mx-auto space-y-4">
         
         <!-- Header Ringkas -->
@@ -33,13 +70,17 @@
                 <p class="text-[10px] text-gray-400">PT. Berkah Baja Steel</p>
             </div>
 
-            <!-- Modal Awal & PDF (Ringkas Berdua) -->
+            <!-- Modal Awal & PDF & Kunci (Ringkas) -->
             <div class="flex items-center gap-1.5">
                 <button onclick="unlockModal()" id="btnUnlockModal" class="bg-gray-700 hover:bg-gray-600 active:scale-95 text-[11px] px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 border border-gray-600 transition">
                     🔒 Modal
                 </button>
                 <button onclick="downloadPDF()" class="bg-red-600 hover:bg-red-700 active:scale-95 text-[11px] px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 shadow transition">
                     📄 PDF
+                </button>
+                <!-- Tombol Kunci Ulang Manual -->
+                <button onclick="lockApp()" title="Kunci Aplikasi" class="bg-gray-700 hover:bg-gray-600 active:scale-95 text-[11px] p-1.5 rounded-lg border border-gray-600 transition">
+                    🔒
                 </button>
             </div>
         </div>
@@ -202,6 +243,47 @@
             });
         });
 
+        // PASSWORD AKSES KAS MOBILE:
+        const PASSWORD_KEUANGAN = "BBS2026";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const loginModal = document.getElementById("loginModal");
+            const loginForm = document.getElementById("loginForm");
+            const inputPassword = document.getElementById("inputPassword");
+            const loginError = document.getElementById("loginError");
+
+            // Cek status login sesi browser
+            if (sessionStorage.getItem("kas_authenticated") === "true") {
+                loginModal.classList.add("hidden");
+            } else {
+                loginModal.classList.remove("hidden");
+                inputPassword.focus();
+            }
+
+            // Validasi Password
+            loginForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                if (inputPassword.value === PASSWORD_KEUANGAN) {
+                    sessionStorage.setItem("kas_authenticated", "true");
+                    loginModal.classList.add("hidden");
+                    loginError.classList.add("hidden");
+                    inputPassword.value = "";
+                } else {
+                    loginError.classList.remove("hidden");
+                    inputPassword.value = "";
+                    inputPassword.focus();
+                }
+            });
+        });
+
+        // Kunci ulang manual (Tombol Gembok kecil)
+        function lockApp() {
+            sessionStorage.removeItem("kas_authenticated");
+            const loginModal = document.getElementById("loginModal");
+            loginModal.classList.remove("hidden");
+            document.getElementById("inputPassword").focus();
+        }
+        
         // Unlock Modal Awal via Password
         window.unlockModal = () => {
             const container = document.getElementById('modalAwalContainer');
