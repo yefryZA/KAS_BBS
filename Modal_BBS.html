@@ -19,49 +19,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 p-4 md:p-8">
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen p-4 md:p-8">
 
     <div class="max-w-6xl mx-auto space-y-6">
         <!-- Header -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-800/90 p-6 rounded-2xl shadow-lg border border-slate-700/80">
             <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="text-2xl font-bold text-gray-900">Sistem Kas Modal</h1>
-                    <span id="syncBadge" class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-0.5 rounded-full font-semibold">Menghubungkan...</span>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-2xl font-bold tracking-tight text-white">Sistem Kas Modal</h1>
+                    <span id="syncBadge" class="inline-flex items-center gap-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs px-3 py-1 rounded-full font-semibold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                        Menghubungkan...
+                    </span>
                 </div>
-                <p class="text-sm text-gray-500">Persistensi Cloud Firebase: <span class="font-mono text-xs bg-gray-100 px-1 py-0.5 rounded">system - PT. BBS</span></p>
+                <p class="text-xs md:text-sm text-slate-400 mt-1">Persistensi Cloud Firebase: <span class="font-mono text-xs bg-slate-700/60 text-slate-200 px-2 py-0.5 rounded-md border border-slate-600/50">system - PT. BBS</span></p>
             </div>
             
             <div class="flex flex-wrap items-center gap-3">
-                <button onclick="downloadPDF()" class="bg-red-600 hover:bg-red-700 text-white font-semibold text-xs px-4 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition">
+                <button onclick="downloadPDF()" class="bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition">
                     📄 Download PDF (A4)
                 </button>
-                <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-lg border border-gray-200">
-                    <label class="text-xs font-semibold text-gray-700">Modal Awal:</label>
-                    <input type="text" inputmode="numeric" id="inputModalAwal" disabled placeholder="0" class="w-36 px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500 text-right font-medium text-sm bg-gray-200 cursor-not-allowed">
-                    <button id="btnUnlockModal" onclick="unlockModal()" class="text-xs bg-gray-700 hover:bg-gray-800 text-white px-2.5 py-1 rounded font-medium">🔒 Buka Kunci</button>
+                <div class="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-700">
+                    <label class="text-xs font-semibold text-slate-300 pl-1">Modal Awal:</label>
+                    <input type="text" inputmode="numeric" id="inputModalAwal" disabled placeholder="0" class="w-36 px-2.5 py-1 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-right font-semibold text-sm bg-slate-800 text-slate-400 cursor-not-allowed">
+                    <button id="btnUnlockModal" onclick="unlockModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition">🔒 Buka Kunci</button>
                 </div>
             </div>
         </div>
 
         <!-- Metric Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-                <span class="text-xs font-semibold uppercase text-gray-400">Modal Awal</span>
-                <div id="cardModal" class="text-xl font-bold text-blue-600 mt-1">Rp 0</div>
+            <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 shadow-md">
+                <span class="text-xs font-bold tracking-wider uppercase text-slate-400">Modal Awal</span>
+                <div id="cardModal" class="text-2xl font-extrabold text-indigo-400 mt-2">Rp 0</div>
             </div>
-            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-                <span class="text-xs font-semibold uppercase text-gray-400">Total Pengeluaran</span>
-                <div id="cardPengeluaran" class="text-xl font-bold text-red-600 mt-1">Rp 0</div>
+            <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 shadow-md">
+                <span class="text-xs font-bold tracking-wider uppercase text-slate-400">Total Pengeluaran</span>
+                <div id="cardPengeluaran" class="text-2xl font-extrabold text-rose-400 mt-2">Rp 0</div>
             </div>
-            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-                <span class="text-xs font-semibold uppercase text-gray-400">Total Penjualan (Invoice)</span>
-                <div id="cardPenjualan" class="text-xl font-bold text-green-600 mt-1">Rp 0</div>
+            <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 shadow-md">
+                <span class="text-xs font-bold tracking-wider uppercase text-slate-400">Total Penjualan (Invoice)</span>
+                <div id="cardPenjualan" class="text-2xl font-extrabold text-emerald-400 mt-2">Rp 0</div>
             </div>
-            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm bg-gradient-to-br from-white to-blue-50">
-                <span class="text-xs font-semibold uppercase text-gray-400">Laba Bersih (Margin)</span>
-                <div id="cardMargin" class="text-xl font-bold text-emerald-700 mt-1">Rp 0</div>
-                <span id="cardPersenMargin" class="text-xs font-medium text-emerald-600">0% Profit Margin</span>
+            <div class="bg-gradient-to-br from-slate-800 via-slate-800 to-emerald-950/40 p-5 rounded-2xl border border-emerald-500/30 shadow-md">
+                <span class="text-xs font-bold tracking-wider uppercase text-slate-400">Laba Bersih (Margin)</span>
+                <div id="cardMargin" class="text-2xl font-extrabold text-emerald-300 mt-2">Rp 0</div>
+                <span id="cardPersenMargin" class="inline-block mt-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md">0% Profit Margin</span>
             </div>
         </div>
 
@@ -69,33 +72,32 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <!-- Form Input -->
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-fit">
-                <h2 id="formTitle" class="text-lg font-bold text-gray-900 mb-4">Input Transaksi</h2>
+            <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md h-fit">
+                <h2 id="formTitle" class="text-lg font-bold text-white mb-4">Input Transaksi</h2>
                 <form id="txForm" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Jenis Transaksi</label>
-                        <!-- Dropdown Warna Dinamis -->
-                        <select id="txType" class="w-full border-2 px-3 py-2 rounded-lg font-bold text-white transition-all shadow-sm">
-                            <option value="pengeluaran">PENGELUARAN</option>
-                            <option value="penjualan">I N V O I C E</option>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Jenis Transaksi</label>
+                        <select id="txType" class="w-full border border-slate-700 bg-slate-900 px-3.5 py-2.5 rounded-xl font-bold text-white transition-all outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="pengeluaran" class="bg-slate-900 text-white">PENGELUARAN</option>
+                            <option value="penjualan" class="bg-slate-900 text-white">I N V O I C E</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Keterangan / Item</label>
-                        <input type="text" id="txDesc" required placeholder="Contoh: Pembelian Besi Plat 500 Pcs" class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Keterangan / Item</label>
+                        <input type="text" id="txDesc" required placeholder="Contoh: Pembelian Besi Plat 500 Pcs" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Nominal (Rp)</label>
-                        <input type="text" inputmode="numeric" id="txAmount" required placeholder="Contoh: 45,000,000" class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal (Rp)</label>
+                        <input type="text" inputmode="numeric" id="txAmount" required placeholder="Contoh: 45,000,000" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm font-medium">
                     </div>
 
-                    <div class="flex gap-2">
-                        <button type="submit" id="btnSubmit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition shadow-sm">
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" id="btnSubmit" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl transition shadow-md text-sm">
                             + Simpan Transaksi
                         </button>
-                        <button type="button" id="btnCancelEdit" onclick="cancelEdit()" class="hidden bg-gray-400 hover:bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg transition">
+                        <button type="button" id="btnCancelEdit" onclick="cancelEdit()" class="hidden bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2.5 rounded-xl transition text-sm">
                             Batal
                         </button>
                     </div>
@@ -103,22 +105,22 @@
             </div>
 
             <!-- Tabel Riwayat -->
-            <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
+            <div class="lg:col-span-2 bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md flex flex-col justify-between">
                 <div>
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">Riwayat Transaksi Real-time</h2>
-                    <div class="overflow-x-auto">
+                    <h2 class="text-lg font-bold text-white mb-4">Riwayat Transaksi Real-time</h2>
+                    <div class="overflow-x-auto rounded-xl border border-slate-700/60">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead>
-                                <tr class="border-b bg-gray-50 text-gray-600">
-                                    <th class="p-3">Keterangan</th>
-                                    <th class="p-3">Tipe</th>
-                                    <th class="p-3 text-right">Nominal</th>
-                                    <th class="p-3 text-center">Aksi</th>
+                                <tr class="bg-slate-900/80 text-slate-400 uppercase text-[11px] font-bold tracking-wider">
+                                    <th class="p-3.5">Keterangan</th>
+                                    <th class="p-3.5">Tipe</th>
+                                    <th class="p-3.5 text-right">Nominal</th>
+                                    <th class="p-3.5 text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="txTable" class="divide-y">
+                            <tbody id="txTable" class="divide-y divide-slate-700/60 text-slate-200">
                                 <tr>
-                                    <td colspan="4" class="p-4 text-center text-gray-400">Memuat data dari Firebase...</td>
+                                    <td colspan="4" class="p-6 text-center text-slate-500 italic">Memuat data dari Firebase...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -126,9 +128,9 @@
                 </div>
 
                 <!-- Footer Kas Sisa -->
-                <div class="mt-6 pt-4 border-t flex justify-between items-center bg-gray-50 p-4 rounded-lg">
-                    <span class="font-semibold text-gray-700">Saldo Kas Saat Ini:</span>
-                    <span id="cardKasAkhir" class="text-2xl font-black text-gray-900">Rp 0</span>
+                <div class="mt-6 pt-4 border-t border-slate-700/60 flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="font-medium text-slate-300 text-sm">Saldo Kas Saat Ini:</span>
+                    <span id="cardKasAkhir" class="text-2xl font-black text-emerald-400 tracking-tight">Rp 0</span>
                 </div>
             </div>
 
