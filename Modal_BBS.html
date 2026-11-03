@@ -64,23 +64,23 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-800/90 p-6 rounded-2xl shadow-lg border border-slate-700/80">
             <div>
                 <div class="flex items-center gap-3">
-                    <h1 class="text-2xl font-bold tracking-tight text-white">Sistem Kas Modal</h1>
+                    <h1 class="text-2xl font-bold tracking-tight text-white">Sistem KAS</h1>
                     <span id="syncBadge" class="inline-flex items-center gap-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs px-3 py-1 rounded-full font-semibold">
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
                         Menghubungkan...
                     </span>
                 </div>
-                <p class="text-xs md:text-sm text-slate-400 mt-1">Persistensi Cloud Firebase: <span class="font-mono text-xs bg-slate-700/60 text-slate-200 px-2 py-0.5 rounded-md border border-slate-600/50">system - PT. BBS</span></p>
+                <p class="text-xs md:text-sm text-slate-400 mt-1">Cloud Firebase: <span class="font-mono text-xs bg-slate-700/60 text-slate-200 px-2 py-0.5 rounded-md border border-slate-600/50">system - PT. BBS</span></p>
             </div>
             
             <div class="flex flex-wrap items-center gap-3">
                 <button onclick="downloadPDF()" class="bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition">
-                    📄 Download PDF (A4)
+                    📄 PDF
                 </button>
                 <div class="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-700">
                     <label class="text-xs font-semibold text-slate-300 pl-1">Modal Awal:</label>
                     <input type="text" inputmode="numeric" id="inputModalAwal" disabled placeholder="0" class="w-36 px-2.5 py-1 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-right font-semibold text-sm bg-slate-800 text-slate-400 cursor-not-allowed">
-                    <button id="btnUnlockModal" onclick="unlockModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition">🔒 Buka Kunci</button>
+                    <button id="btnUnlockModal" onclick="unlockModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition">🔒</button>
                 </div>
                 <!-- Tombol Kunci Ulang / Lock System -->
                 <button onclick="lockApp()" title="Kunci Sistem" class="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white p-2.5 rounded-xl border border-slate-600 transition">
@@ -503,7 +503,7 @@ window.downloadPDF = () => {
             const data = snapshot.val() || {};
             
             const badge = document.getElementById('syncBadge');
-            badge.innerText = "Terhubung Cloud";
+            badge.innerText = "Terhubung";
             badge.className = "bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded-full font-semibold";
 
             currentModalAwal = parseFloat(data.modal_awal) || 0;
