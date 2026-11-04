@@ -212,7 +212,7 @@
         let currentLabaBersih = 0;
         let transactionsList = [];
 
-        const MODAL_PASSWORD = "BBS2026";
+        const MODAL_PASSWORD = "123";
 
         const formatIDR = (num) => {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num || 0);
@@ -363,106 +363,137 @@
             }
         };
 
+        // Helper format tanggal (misal: 04 Nov 2026)
+        const formatDate = (timestamp) => {
+            if (!timestamp) return '-';
+            return new Date(timestamp).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+        };
+
         // DOWNLOAD PDF LAPORAN
         window.downloadPDF = () => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-            doc.setFontSize(16);
-            doc.setFont("helvetica", "bold");
-            doc.text("LAPORAN KAS MODAL", 105, 18, { align: "center" });
-            
-            doc.setFontSize(11);
-            doc.setFont("helvetica", "normal");
-            doc.text("PT. BERKAH BAJA STEEL", 105, 24, { align: "center" });
+    // Title / Header Surat
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("LAPORAN KAS MODAL", 105, 18, { align: "center" });
+    
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.text("PT. BERKAH BAJA STEEL", 105, 24, { align: "center" });
 
-            const today = new Date();
-            const dateFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const today = new Date();
+    const dateFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-            const tableBody = transactionsList.map(t => [
-                t.desc,
-                t.type === 'penjualan' ? 'INVOICE / Pendapatan' : 'Pengeluaran',
-                t.type === 'penjualan' ? '+ Rp.' : '- Rp.',
-                formatNumberOnly(t.amount)
-            ]);
+    // 1. Table Transaksi Utama (Tanggal, Keterangan, Tipe Center, Nominal)
+    const tableBody = transactionsList.map(t => [
+        formatDate(t.createdAt || t.updatedAt),
+        t.desc,
+        t.type === 'penjualan' ? 'INVOICE / Pendapatan' : 'Pengeluaran',
+        t.type === 'penjualan' ? '+ Rp.' : '- Rp.',
+        formatNumberOnly(t.amount)
+    ]);
 
-            doc.autoTable({
-                startY: 32,
-                margin: { left: 14 },
-                head: [[
-                    'Keterangan Item / Transaksi', 
-                    'Tipe', 
-                    { content: 'Nominal', colSpan: 2, styles: { halign: 'center' } }
-                ]],
-                body: tableBody,
-                theme: 'grid',
-                headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
-                columnStyles: {
-                    0: { cellWidth: 95 },
-                    1: { cellWidth: 45 },
-                    2: { cellWidth: 12, halign: 'left' },
-                    3: { cellWidth: 30, halign: 'right' }
-                }
+    doc.autoTable({
+        startY: 32,
+        margin: { left: 14 },
+     head: [[
+    'Tanggal',
+    'Keterangan Item / Transaksi', 
+    { content: 'Tipe', styles: { halign: 'center' } }, 
+    { content: 'Nominal', colSpan: 2, styles: { halign: 'center' } }
+]],
+        body: tableBody,
+        theme: 'grid',
+        headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
+        columnStyles: {
+            0: { cellWidth: 24 }, // Kolom Tanggal
+            1: { cellWidth: 88 }, // Keterangan Item (Diperbesar dari 67mm ke 77mm)
+            2: { cellWidth: 32, halign: 'center' }, // Tipe (Diperkecil dari 45mm ke 35mm & Rata Tengah)
+            3: { cellWidth: 12, halign: 'left' },  // 'Rp.' Lurus Rata Kiri
+            4: { cellWidth: 25, halign: 'right' }  // Nominal Angka Rata Kanan
+        }
+    });
+
+    let finalY = doc.lastAutoTable.finalY + 8;
+
+    if (finalY > 210) {
+        doc.addPage();
+        finalY = 20;
+    }
+
+    // 2. Table Ringkasan Keuangan
+    doc.autoTable({
+        startY: finalY,
+        margin: { left: 14 },
+        tableWidth: 100,
+        head: [['RINGKASAN KEUANGAN', { content: 'NOMINAL', colSpan: 2, styles: { halign: 'center' } }]],
+        body: [
+            ['MODAL AWAL', 'Rp.', formatNumberOnly(currentModalAwal)],
+            ['TOTAL PENGELUARAN', 'Rp.', formatNumberOnly(currentTotalPengeluaran)],
+            ['TOTAL PENJUALAN (INVOICE)', 'Rp.', formatNumberOnly(currentTotalPenjualan)],
+            ['LABA BERSIH (MARGIN)', 'Rp.', formatNumberOnly(currentLabaBersih)]
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: [51, 65, 85], textColor: 255, fontStyle: 'bold' },
+        styles: { fontSize: 9, cellPadding: 2 },
+        columnStyles: {
+            0: { fontStyle: 'bold', cellWidth: 55 },
+            1: { halign: 'left', fontStyle: 'bold', cellWidth: 12 },
+            2: { halign: 'right', fontStyle: 'bold', cellWidth: 33 }
+        }
+    });
+
+    let summaryY = doc.lastAutoTable.finalY + 12;
+    if (summaryY > 240) {
+        doc.addPage();
+        summaryY = 25;
+    }
+
+    // 3. Tanda Tangan
+    const signX = 160;
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Cilegon, ${dateFormatted}`, signX, summaryY, { align: "center" });
+    doc.text("Hormat Kami,", signX, summaryY + 6, { align: "center" });
+    
+    doc.setFont("helvetica", "bold");
+    doc.text("Yefry Desfirmanza", signX, summaryY + 28, { align: "center" });
+    doc.setFont("helvetica", "normal");
+    doc.text("Manager", signX, summaryY + 33, { align: "center" });
+
+    // Download PDF
+    doc.save(`Laporan_Kas_Modal_BBS_${today.toISOString().split('T')[0]}.pdf`);
+
+    // 4. Konfirmasi Hapus Data Setelah Download
+    setTimeout(() => {
+        if (confirm("Laporan PDF berhasil didownload!\n\nApakah Anda ingin menghapus SELURUH data transaksi di Firebase?")) {
+            const transaksiRef = ref(db, 'sistem_kas/transaksi');
+            remove(transaksiRef).then(() => {
+                alert("Seluruh data transaksi berhasil dihapus dari sistem.");
+            }).catch((err) => {
+                alert("Gagal menghapus data: " + err.message);
             });
-
-            let finalY = doc.lastAutoTable.finalY + 8;
-            if (finalY > 210) { doc.addPage(); finalY = 20; }
-
-            // Table Ringkasan Separuh Lebar (100mm)
-            doc.autoTable({
-                startY: finalY,
-                margin: { left: 14 },
-                tableWidth: 100,
-                head: [['RINGKASAN REKAPITULASI KEUANGAN', { content: 'NOMINAL', colSpan: 2, styles: { halign: 'center' } }]],
-                body: [
-                    ['MODAL AWAL', 'Rp.', formatNumberOnly(currentModalAwal)],
-                    ['TOTAL PENGELUARAN', 'Rp.', formatNumberOnly(currentTotalPengeluaran)],
-                    ['TOTAL PENJUALAN (INVOICE)', 'Rp.', formatNumberOnly(currentTotalPenjualan)],
-                    ['LABA BERSIH (MARGIN)', 'Rp.', formatNumberOnly(currentLabaBersih)]
-                ],
-                theme: 'grid',
-                headStyles: { fillColor: [51, 65, 85], textColor: 255, fontStyle: 'bold' },
-                styles: { fontSize: 9, cellPadding: 2 },
-                columnStyles: {
-                    0: { fontStyle: 'bold', cellWidth: 55 },
-                    1: { halign: 'left', fontStyle: 'bold', cellWidth: 12 },
-                    2: { halign: 'right', fontStyle: 'bold', cellWidth: 33 }
-                }
-            });
-
-            let summaryY = doc.lastAutoTable.finalY + 12;
-            if (summaryY > 240) { doc.addPage(); summaryY = 25; }
-
-            // TTD Center Sebelah Kanan
-            const signX = 160;
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
-            doc.text(`Cilegon, ${dateFormatted}`, signX, summaryY, { align: "center" });
-            doc.text("Hormat Kami,", signX, summaryY + 6, { align: "center" });
-            
-            doc.setFont("helvetica", "bold");
-            doc.text("Yefry Desfirmanza", signX, summaryY + 28, { align: "center" });
-            doc.setFont("helvetica", "normal");
-            doc.text("Manager", signX, summaryY + 33, { align: "center" });
-
-            doc.save(`Laporan_Kas_Modal_BBS_${today.toISOString().split('T')[0]}.pdf`);
-
-            setTimeout(() => {
-                if (confirm("PDF Berhasil didownload!\n\nHapus SELURUH data transaksi di Firebase?")) {
-                    remove(transaksiRef);
-                }
-            }, 500);
-        };
+        }
+    }, 500);
+};
 
         // SYNC REALTIME FIREBASE
         onValue(rootRef, (snapshot) => {
             const data = snapshot.val() || {};
             
             const badge = document.getElementById('syncBadge');
-            badge.className = "w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]";
+            if (badge) badge.className = "w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]";
 
             currentModalAwal = parseFloat(data.modal_awal) || 0;
-            inputModal.value = currentModalAwal > 0 ? formatNumberWithCommas(currentModalAwal) : '';
+            if (document.activeElement !== inputModal) {
+                inputModal.value = currentModalAwal > 0 ? formatNumberWithCommas(currentModalAwal) : '';
+            }
 
             const transaksiObj = data.transaksi || {};
             currentTotalPengeluaran = 0;
@@ -470,12 +501,12 @@
             transactionsList = [];
 
             const recentListContainer = document.getElementById('recentTxList');
-            recentListContainer.innerHTML = '';
+            if (recentListContainer) recentListContainer.innerHTML = '';
 
             const keys = Object.keys(transaksiObj);
 
             if (keys.length === 0) {
-                recentListContainer.innerHTML = '<div class="text-center text-xs text-gray-500 py-3">Belum ada transaksi.</div>';
+                if (recentListContainer) recentListContainer.innerHTML = '<div class="text-center text-xs text-gray-500 py-3">Belum ada transaksi.</div>';
             } else {
                 keys.reverse().forEach((key, index) => {
                     const t = transaksiObj[key];
@@ -485,14 +516,18 @@
                     if (t.type === 'pengeluaran') currentTotalPengeluaran += t.amount;
                     if (t.type === 'penjualan') currentTotalPenjualan += t.amount;
 
-                    // Tampilkan max 5 riwayat terbaru di HP
-                    if (index < 5) {
+                    // Tampilkan max 5 riwayat terbaru di HP beserta tanggal
+                    if (recentListContainer && index < 5) {
+                        const tglFormatted = formatDate(t.createdAt || t.updatedAt);
                         const itemDiv = document.createElement('div');
                         itemDiv.className = "flex justify-between items-center bg-gray-900/80 p-2.5 rounded-xl border border-gray-700/50 text-xs";
                         itemDiv.innerHTML = `
                             <div class="flex items-center gap-2 overflow-hidden">
                                 <span class="w-2 h-2 rounded-full flex-shrink-0 ${t.type === 'penjualan' ? 'bg-emerald-500' : 'bg-red-500'}"></span>
-                                <span class="truncate font-medium text-gray-200">${t.desc}</span>
+                                <div class="overflow-hidden">
+                                    <div class="text-[10px] text-gray-400 font-normal">📅 ${tglFormatted}</div>
+                                    <div class="truncate font-medium text-gray-200">${t.desc}</div>
+                                </div>
                             </div>
                             <div class="flex items-center gap-2 flex-shrink-0">
                                 <span class="font-bold ${t.type === 'penjualan' ? 'text-emerald-400' : 'text-red-400'}">
@@ -509,11 +544,11 @@
             currentLabaBersih = currentTotalPenjualan - currentTotalPengeluaran;
             const kasAkhir = currentModalAwal - currentTotalPengeluaran + currentTotalPenjualan;
 
-            document.getElementById('cardModal').innerText = formatIDR(currentModalAwal);
-            document.getElementById('cardPengeluaran').innerText = formatIDR(currentTotalPengeluaran);
-            document.getElementById('cardPenjualan').innerText = formatIDR(currentTotalPenjualan);
-            document.getElementById('cardMargin').innerText = `Laba Bersih: ${formatIDR(currentLabaBersih)}`;
-            document.getElementById('cardKasAkhir').innerText = formatIDR(kasAkhir);
+            if (document.getElementById('cardModal')) document.getElementById('cardModal').innerText = formatIDR(currentModalAwal);
+            if (document.getElementById('cardPengeluaran')) document.getElementById('cardPengeluaran').innerText = formatIDR(currentTotalPengeluaran);
+            if (document.getElementById('cardPenjualan')) document.getElementById('cardPenjualan').innerText = formatIDR(currentTotalPenjualan);
+            if (document.getElementById('cardMargin')) document.getElementById('cardMargin').innerText = `Laba Bersih: ${formatIDR(currentLabaBersih)}`;
+            if (document.getElementById('cardKasAkhir')) document.getElementById('cardKasAkhir').innerText = formatIDR(kasAkhir);
         });
     </script>
 </body>
