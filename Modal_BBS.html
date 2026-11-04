@@ -75,7 +75,7 @@
             
             <div class="flex flex-wrap items-center gap-3">
                 <button onclick="downloadPDF()" class="bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition">
-                    📄 Download PDF (A4)
+                    📄 Download PDF
                 </button>
                 <div class="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-700">
                     <label class="text-xs font-semibold text-slate-300 pl-1">Modal Awal:</label>
@@ -110,64 +110,70 @@
             </div>
         </div>
 
-        <!-- Main Form & Table Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Form Input -->
-            <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md h-fit">
-                <h2 id="formTitle" class="text-lg font-bold text-white mb-4">Input Transaksi</h2>
-                <form id="txForm" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Jenis Transaksi</label>
-                        <select id="txType" class="w-full border border-slate-700 bg-slate-900 px-3.5 py-2.5 rounded-xl font-bold text-white transition-all outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="pengeluaran" class="bg-slate-900 text-white">PENGELUARAN</option>
-                            <option value="penjualan" class="bg-slate-900 text-white">I N V O I C E</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Keterangan / Item</label>
-                        <input type="text" id="txDesc" required placeholder="Contoh: Pembelian Besi Plat 500 Pcs" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal (Rp)</label>
-                        <input type="text" inputmode="numeric" id="txAmount" required placeholder="Contoh: 45,000,000" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm font-medium">
-                    </div>
-
-                    <div class="flex gap-2 pt-2">
-                        <button type="submit" id="btnSubmit" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl transition shadow-md text-sm">
-                            + Simpan Transaksi
-                        </button>
-                        <button type="button" id="btnCancelEdit" onclick="cancelEdit()" class="hidden bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2.5 rounded-xl transition text-sm">
-                            Batal
-                        </button>
-                    </div>
-                </form>
+        <!-- Main Container (Layout Bertumpuk: Form Atas, Tabel Bawah) -->
+<div class="flex flex-col gap-6">
+    
+    <!-- 1. Form Input (Berbaris dari Kiri ke Kanan) -->
+    <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md">
+        <h2 id="formTitle" class="text-lg font-bold text-white mb-4">Input Transaksi</h2>
+        
+        <form id="txForm" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+            <!-- Jenis Transaksi -->
+            <div class="lg:col-span-3">
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Jenis Transaksi</label>
+                <select id="txType" class="w-full border border-slate-700 bg-slate-900 px-3.5 py-2.5 rounded-xl font-bold text-white transition-all outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="pengeluaran" class="bg-slate-900 text-white">PENGELUARAN</option>
+                    <option value="penjualan" class="bg-slate-900 text-white">I N V O I C E</option>
+                </select>
             </div>
 
-            <!-- Tabel Riwayat -->
-            <div class="lg:col-span-2 bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md flex flex-col justify-between">
-                <div>
-                    <h2 class="text-lg font-bold text-white mb-4">Riwayat Transaksi Real-time</h2>
-                    <div class="overflow-x-auto rounded-xl border border-slate-700/60">
-                        <table class="w-full text-left text-sm border-collapse">
-                            <thead>
-                                <tr class="bg-slate-900/80 text-slate-400 uppercase text-[11px] font-bold tracking-wider">
-                                    <th class="p-3.5">Keterangan</th>
-                                    <th class="p-3.5">Tipe</th>
-                                    <th class="p-3.5 text-right">Nominal</th>
-                                    <th class="p-3.5 text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="txTable" class="divide-y divide-slate-700/60 text-slate-200">
-                                <tr>
-                                    <td colspan="4" class="p-6 text-center text-slate-500 italic">Memuat data dari Firebase...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <!-- Keterangan / Item -->
+            <div class="lg:col-span-4">
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Keterangan / Item</label>
+                <input type="text" id="txDesc" required placeholder="Contoh: Pembelian Besi Plat 500 Pcs" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
+            </div>
+
+            <!-- Nominal (Rp) -->
+            <div class="lg:col-span-3">
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal (Rp)</label>
+                <input type="text" inputmode="numeric" id="txAmount" required placeholder="Contoh: 45,000,000" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm font-medium">
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="lg:col-span-2 flex gap-2">
+                <button type="submit" id="btnSubmit" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl transition shadow-md text-sm whitespace-nowrap">
+                    + Simpan Transaksi
+                </button>
+                <button type="button" id="btnCancelEdit" onclick="cancelEdit()" class="hidden bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2.5 rounded-xl transition text-sm">
+                    Batal
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 2. Tabel Riwayat (Lebar Penuh di Bawah Form) -->
+    <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md">
+        <h2 class="text-lg font-bold text-white mb-4">Riwayat Transaksi Real-time</h2>
+        <div class="overflow-x-auto rounded-xl border border-slate-700/60">
+            <table class="w-full text-left text-sm border-collapse">
+                <thead>
+                    <tr class="bg-slate-900/80 text-slate-400 uppercase text-[11px] font-bold tracking-wider">
+                        <th class="p-3.5">Keterangan</th>
+                        <th class="p-3.5 text-center">Tipe</th>
+                        <th class="p-3.5 text-right">Nominal</th>
+                        <th class="p-3.5 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="txTable" class="divide-y divide-slate-700/60 text-slate-200">
+                    <tr>
+                        <td colspan="4" class="p-6 text-center text-slate-500 italic">Memuat data dari Firebase...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 
                 <!-- Footer Kas Sisa -->
                 <div class="mt-6 pt-4 border-t border-slate-700/60 flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
@@ -317,77 +323,87 @@
             set(modalRef, val);
         });
 
-        // 3. FITUR TAMBAH & EDIT TRANSAKSI
-        const inputAmount = document.getElementById('txAmount');
-        inputAmount.addEventListener('input', (e) => {
-            e.target.value = formatNumberWithCommas(e.target.value);
-        });
-
-        document.getElementById('txForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const type = txTypeSelect.value;
-            const desc = document.getElementById('txDesc').value.trim();
-            const amount = parseRawNumber(inputAmount.value);
-
-            if (!desc || amount <= 0) return;
-
-            if (editingKey) {
-                // Mode Update
-                const itemRef = ref(db, `sistem_kas/transaksi/${editingKey}`);
-                set(itemRef, {
-                    type,
-                    desc,
-                    amount,
-                    updatedAt: Date.now()
-                }).then(() => {
-                    cancelEdit();
-                });
-            } else {
-                // Mode Tambah Baru
-                push(transaksiRef, {
-                    type,
-                    desc,
-                    amount,
-                    createdAt: Date.now()
-                }).then(() => {
-                    document.getElementById('txDesc').value = '';
-                    inputAmount.value = '';
-                });
-            }
-        });
-
-        window.editTx = (key, desc, type, amount) => {
-            editingKey = key;
-            document.getElementById('formTitle').innerText = "Edit Transaksi";
-            document.getElementById('txDesc').value = desc;
-            txTypeSelect.value = type;
-            updateDropdownColor();
-            inputAmount.value = formatNumberWithCommas(amount);
-            document.getElementById('btnSubmit').innerText = "💾 Simpan Perubahan";
-            document.getElementById('btnSubmit').className = "flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
-            document.getElementById('btnCancelEdit').classList.remove('hidden');
-        };
-
-        window.cancelEdit = () => {
-            editingKey = null;
-            document.getElementById('formTitle').innerText = "Input Transaksi";
-            document.getElementById('txDesc').value = '';
-            inputAmount.value = '';
-            document.getElementById('btnSubmit').innerText = "+ Simpan Transaksi";
-            document.getElementById('btnSubmit').className = "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
-            document.getElementById('btnCancelEdit').classList.add('hidden');
-        };
-
-        window.deleteTx = (key) => {
-            if (confirm('Hapus transaksi ini?')) {
-                const itemRef = ref(db, `sistem_kas/transaksi/${key}`);
-                remove(itemRef);
-            }
-        };
-
-       // Helper format angka tanpa simbol Rp (misal: 1.000.000)
+        // Helper format angka tanpa simbol Rp (misal: 1.000.000)
 const formatNumberOnly = (num) => {
     return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(num || 0);
+};
+
+// Helper format tanggal (misal: 04 Nov 2026)
+const formatDate = (timestamp) => {
+    if (!timestamp) return '-';
+    return new Date(timestamp).toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+};
+
+// 3. FITUR TAMBAH & EDIT TRANSAKSI
+const inputAmount = document.getElementById('txAmount');
+inputAmount.addEventListener('input', (e) => {
+    e.target.value = formatNumberWithCommas(e.target.value);
+});
+
+document.getElementById('txForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const type = txTypeSelect.value;
+    const desc = document.getElementById('txDesc').value.trim();
+    const amount = parseRawNumber(inputAmount.value);
+
+    if (!desc || amount <= 0) return;
+
+    if (editingKey) {
+        // Mode Update (Menggunakan update agar createdAt tidak terhapus)
+        const itemRef = ref(db, `sistem_kas/transaksi/${editingKey}`);
+        update(itemRef, {
+            type,
+            desc,
+            amount,
+            updatedAt: Date.now()
+        }).then(() => {
+            cancelEdit();
+        });
+    } else {
+        // Mode Tambah Baru (Menyimpan createdAt otomatis)
+        push(transaksiRef, {
+            type,
+            desc,
+            amount,
+            createdAt: Date.now()
+        }).then(() => {
+            document.getElementById('txDesc').value = '';
+            inputAmount.value = '';
+        });
+    }
+});
+
+window.editTx = (key, desc, type, amount) => {
+    editingKey = key;
+    document.getElementById('formTitle').innerText = "Edit Transaksi";
+    document.getElementById('txDesc').value = desc;
+    txTypeSelect.value = type;
+    updateDropdownColor();
+    inputAmount.value = formatNumberWithCommas(amount);
+    document.getElementById('btnSubmit').innerText = "💾 Simpan Perubahan";
+    document.getElementById('btnSubmit').className = "flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
+    document.getElementById('btnCancelEdit').classList.remove('hidden');
+};
+
+window.cancelEdit = () => {
+    editingKey = null;
+    document.getElementById('formTitle').innerText = "Input Transaksi";
+    document.getElementById('txDesc').value = '';
+    inputAmount.value = '';
+    document.getElementById('btnSubmit').innerText = "+ Simpan Transaksi";
+    document.getElementById('btnSubmit').className = "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
+    document.getElementById('btnCancelEdit').classList.add('hidden');
+};
+
+window.deleteTx = (key) => {
+    if (confirm('Hapus transaksi ini?')) {
+        const itemRef = ref(db, `sistem_kas/transaksi/${key}`);
+        remove(itemRef);
+    }
 };
 
 // 4. DOWNLOAD PDF (A4 PORTRAIT)
@@ -407,8 +423,9 @@ window.downloadPDF = () => {
     const today = new Date();
     const dateFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    // 1. Table Transaksi Utama (Nominal dipisah: 'Rp.' rata kiri, Angka rata kanan)
+    // 1. Table Transaksi Utama (Tanggal, Keterangan, Tipe Center, Nominal)
     const tableBody = transactionsList.map(t => [
+        formatDate(t.createdAt || t.updatedAt),
         t.desc,
         t.type === 'penjualan' ? 'INVOICE / Pendapatan' : 'Pengeluaran',
         t.type === 'penjualan' ? '+ Rp.' : '- Rp.',
@@ -418,19 +435,21 @@ window.downloadPDF = () => {
     doc.autoTable({
         startY: 32,
         margin: { left: 14 },
-        head: [[
-            'Keterangan Item / Transaksi', 
-            'Tipe', 
-            { content: 'Nominal', colSpan: 2, styles: { halign: 'center' } }
-        ]],
+     head: [[
+    'Tanggal',
+    'Keterangan Item / Transaksi', 
+    { content: 'Tipe', styles: { halign: 'center' } }, 
+    { content: 'Nominal', colSpan: 2, styles: { halign: 'center' } }
+]],
         body: tableBody,
         theme: 'grid',
         headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
         columnStyles: {
-            0: { cellWidth: 95 },
-            1: { cellWidth: 45 },
-            2: { cellWidth: 12, halign: 'left' },  // 'Rp.' Lurus Rata Kiri
-            3: { cellWidth: 30, halign: 'right' }  // Nominal Angka Rata Kanan
+            0: { cellWidth: 24 }, // Kolom Tanggal
+            1: { cellWidth: 88 }, // Keterangan Item (Diperbesar dari 67mm ke 77mm)
+            2: { cellWidth: 32, halign: 'center' }, // Tipe (Diperkecil dari 45mm ke 35mm & Rata Tengah)
+            3: { cellWidth: 12, halign: 'left' },  // 'Rp.' Lurus Rata Kiri
+            4: { cellWidth: 25, halign: 'right' }  // Nominal Angka Rata Kanan
         }
     });
 
@@ -441,7 +460,7 @@ window.downloadPDF = () => {
         finalY = 20;
     }
 
-    // 2. Table Ringkasan Keuangan (Dibuat Lebih Kecil: Lebar 100mm / Separuh Tabel Utama)
+    // 2. Table Ringkasan Keuangan
     doc.autoTable({
         startY: finalY,
         margin: { left: 14 },
@@ -458,8 +477,8 @@ window.downloadPDF = () => {
         styles: { fontSize: 9, cellPadding: 2 },
         columnStyles: {
             0: { fontStyle: 'bold', cellWidth: 55 },
-            1: { halign: 'left', fontStyle: 'bold', cellWidth: 12 },  // 'Rp.' Lurus
-            2: { halign: 'right', fontStyle: 'bold', cellWidth: 33 }  // Nominal Rata Kanan
+            1: { halign: 'left', fontStyle: 'bold', cellWidth: 12 },
+            2: { halign: 'right', fontStyle: 'bold', cellWidth: 33 }
         }
     });
 
@@ -469,14 +488,13 @@ window.downloadPDF = () => {
         summaryY = 25;
     }
 
-    // 3. Tanda Tangan (Sisi Kanan, Nama di Atas, Jabatan Manager di Bawah & Center)
-    const signX = 160; // Titik tengah area tanda tangan sebelah kanan
+    // 3. Tanda Tangan
+    const signX = 160;
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text(`Cilegon, ${dateFormatted}`, signX, summaryY, { align: "center" });
     doc.text("Hormat Kami,", signX, summaryY + 6, { align: "center" });
     
-    // Nama & Jabatan (Teks Center di bawah TTD)
     doc.setFont("helvetica", "bold");
     doc.text("Yefry Desfirmanza", signX, summaryY + 28, { align: "center" });
     doc.setFont("helvetica", "normal");
@@ -498,60 +516,65 @@ window.downloadPDF = () => {
     }, 500);
 };
 
-        // 5. REALTIME FIREBASE SYNC
-        onValue(rootRef, (snapshot) => {
-            const data = snapshot.val() || {};
-            
-            const badge = document.getElementById('syncBadge');
-            badge.innerText = "Terhubung Cloud";
-            badge.className = "bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded-full font-semibold";
+// 5. REALTIME FIREBASE SYNC
+onValue(rootRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    
+    const badge = document.getElementById('syncBadge');
+    badge.innerText = "Terhubung Cloud";
+    badge.className = "bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded-full font-semibold";
 
-            currentModalAwal = parseFloat(data.modal_awal) || 0;
-            if (document.activeElement !== inputModal) {
-                inputModal.value = currentModalAwal > 0 ? formatNumberWithCommas(currentModalAwal) : '';
-            }
+    currentModalAwal = parseFloat(data.modal_awal) || 0;
+    if (document.activeElement !== inputModal) {
+        inputModal.value = currentModalAwal > 0 ? formatNumberWithCommas(currentModalAwal) : '';
+    }
 
-            const transaksiObj = data.transaksi || {};
-            currentTotalPengeluaran = 0;
-            currentTotalPenjualan = 0;
+    const transaksiObj = data.transaksi || {};
+    currentTotalPengeluaran = 0;
+    currentTotalPenjualan = 0;
 
-            const tbody = document.getElementById('txTable');
-            tbody.innerHTML = '';
-            transactionsList = [];
+    const tbody = document.getElementById('txTable');
+    tbody.innerHTML = '';
+    transactionsList = [];
 
-            const keys = Object.keys(transaksiObj);
+    const keys = Object.keys(transaksiObj);
 
-            if (keys.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-400">Belum ada transaksi tercatat.</td></tr>';
-            } else {
-                keys.forEach(key => {
-                    const t = transaksiObj[key];
-                    t.key = key;
-                    transactionsList.push(t);
+    if (keys.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-400">Belum ada transaksi tercatat.</td></tr>';
+    } else {
+        keys.forEach(key => {
+            const t = transaksiObj[key];
+            t.key = key;
+            transactionsList.push(t);
 
-                    if (t.type === 'pengeluaran') currentTotalPengeluaran += t.amount;
-                    if (t.type === 'penjualan') currentTotalPenjualan += t.amount;
+            if (t.type === 'pengeluaran') currentTotalPengeluaran += t.amount;
+            if (t.type === 'penjualan') currentTotalPenjualan += t.amount;
 
-                    const row = document.createElement('tr');
-                    row.className = "hover:bg-gray-50 border-b";
-                    row.innerHTML = `
-                        <td class="p-3 font-medium text-orange-400 [text-shadow:_0_0_8px_rgba(251,146,60,0.6)]">${t.desc}</td>
-                        <td class="p-3">
-                            <span class="px-2.5 py-1 text-xs rounded-full font-bold ${t.type === 'penjualan' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
-                                ${t.type === 'penjualan' ? 'INVOICE' : 'Pengeluaran'}
-                            </span>
-                        </td>
-                        <td class="p-3 text-right font-semibold ${t.type === 'penjualan' ? 'text-green-600' : 'text-red-600'}">
-                            ${t.type === 'penjualan' ? '+' : '-'} ${formatIDR(t.amount)}
-                        </td>
-                        <td class="p-3 text-center">
-                            <button onclick="editTx('${key}', '${t.desc.replace(/'/g, "\\'")}', '${t.type}', ${t.amount})" class="text-blue-600 hover:text-blue-800 text-xs font-bold mr-2">Edit</button>
-                            <button onclick="deleteTx('${key}')" class="text-red-500 hover:text-red-700 text-xs font-bold">Hapus</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
+            const tglFormatted = formatDate(t.createdAt || t.updatedAt);
+
+       const row = document.createElement('tr');
+row.className = "hover:bg-slate-700/30 border-b border-slate-700/60";
+row.innerHTML = `
+    <td class="p-3.5 font-medium">
+        <div class="text-xs text-slate-400 font-normal mb-0.5">📅 ${tglFormatted}</div>
+        <div class="text-orange-400 [text-shadow:_0_0_8px_rgba(251,146,60,0.6)]">${t.desc}</div>
+    </td>
+    <td class="p-3.5 text-center"> <!-- DITAMBAHKAN text-center DI SINI -->
+        <span class="px-2.5 py-1 text-xs rounded-full font-bold ${t.type === 'penjualan' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
+            ${t.type === 'penjualan' ? 'INVOICE' : 'Pengeluaran'}
+        </span>
+    </td>
+    <td class="p-3.5 text-right font-semibold ${t.type === 'penjualan' ? 'text-emerald-400' : 'text-rose-400'}">
+        ${t.type === 'penjualan' ? '+' : '-'} ${formatIDR(t.amount)}
+    </td>
+    <td class="p-3.5 text-center">
+        <button onclick="editTx('${key}', '${t.desc.replace(/'/g, "\\'")}', '${t.type}', ${t.amount})" class="text-indigo-400 hover:text-indigo-300 text-xs font-bold mr-2">Edit</button>
+        <button onclick="deleteTx('${key}')" class="text-rose-400 hover:text-rose-300 text-xs font-bold">Hapus</button>
+    </td>
+`;
+            tbody.appendChild(row);
+        });
+    }
 
             currentLabaBersih = currentTotalPenjualan - currentTotalPengeluaran;
             const kasAkhir = currentModalAwal - currentTotalPengeluaran + currentTotalPenjualan;
