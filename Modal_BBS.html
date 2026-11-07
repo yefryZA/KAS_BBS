@@ -543,7 +543,8 @@ onValue(rootRef, (snapshot) => {
     tbody.innerHTML = '';
     transactionsList = [];
 
-    const keys = Object.keys(transaksiObj);
+    // MEMBALIK URUTAN KEY AGAR TRANSAKSI TERBARU BERADA DI PALING ATAS
+    const keys = Object.keys(transaksiObj).reverse();
 
     if (keys.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-400">Belum ada transaksi tercatat.</td></tr>';
@@ -558,14 +559,14 @@ onValue(rootRef, (snapshot) => {
 
             const tglFormatted = formatDate(t.createdAt || t.updatedAt);
 
-       const row = document.createElement('tr');
-row.className = "hover:bg-slate-700/30 border-b border-slate-700/60";
-row.innerHTML = `
+            const row = document.createElement('tr');
+            row.className = "hover:bg-slate-700/30 border-b border-slate-700/60";
+            row.innerHTML = `
     <td class="p-3.5 font-medium">
         <div class="text-xs text-slate-400 font-normal mb-0.5">📅 ${tglFormatted}</div>
         <div class="text-orange-400 [text-shadow:_0_0_8px_rgba(251,146,60,0.6)]">${t.desc}</div>
     </td>
-    <td class="p-3.5 text-center"> <!-- DITAMBAHKAN text-center DI SINI -->
+    <td class="p-3.5 text-center">
         <span class="px-2.5 py-1 text-xs rounded-full font-bold ${t.type === 'penjualan' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
             ${t.type === 'penjualan' ? 'INVOICE' : 'Pengeluaran'}
         </span>
@@ -582,17 +583,17 @@ row.innerHTML = `
         });
     }
 
-            currentLabaBersih = currentTotalPenjualan - currentTotalPengeluaran;
-            const kasAkhir = currentModalAwal - currentTotalPengeluaran + currentTotalPenjualan;
-            const marginPersen = currentTotalPengeluaran > 0 ? ((currentLabaBersih / currentTotalPengeluaran) * 100).toFixed(1) : 0;
+    currentLabaBersih = currentTotalPenjualan - currentTotalPengeluaran;
+    const kasAkhir = currentModalAwal - currentTotalPengeluaran + currentTotalPenjualan;
+    const marginPersen = currentTotalPengeluaran > 0 ? ((currentLabaBersih / currentTotalPengeluaran) * 100).toFixed(1) : 0;
 
-            document.getElementById('cardModal').innerText = formatIDR(currentModalAwal);
-            document.getElementById('cardPengeluaran').innerText = formatIDR(currentTotalPengeluaran);
-            document.getElementById('cardPenjualan').innerText = formatIDR(currentTotalPenjualan);
-            document.getElementById('cardMargin').innerText = formatIDR(currentLabaBersih);
-            document.getElementById('cardKasAkhir').innerText = formatIDR(kasAkhir);
-            document.getElementById('cardPersenMargin').innerText = `${marginPersen}% Profit Margin`;
-        });
+    document.getElementById('cardModal').innerText = formatIDR(currentModalAwal);
+    document.getElementById('cardPengeluaran').innerText = formatIDR(currentTotalPengeluaran);
+    document.getElementById('cardPenjualan').innerText = formatIDR(currentTotalPenjualan);
+    document.getElementById('cardMargin').innerText = formatIDR(currentLabaBersih);
+    document.getElementById('cardKasAkhir').innerText = formatIDR(kasAkhir);
+    document.getElementById('cardPersenMargin').innerText = `${marginPersen}% Profit Margin`;
+});
     </script>
 </body>
 </html>
