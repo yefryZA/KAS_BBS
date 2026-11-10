@@ -73,21 +73,72 @@
                 <p class="text-xs md:text-sm text-slate-400 mt-1">Persistensi Cloud Firebase: <span class="font-mono text-xs bg-slate-700/60 text-slate-200 px-2 py-0.5 rounded-md border border-slate-600/50">System_By. Yefry ZA.</span></p>
             </div>
             
-            <div class="flex flex-wrap items-center gap-3">
-                <button onclick="downloadPDF()" class="bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition">
-                    📄 Download PDF
-                </button>
-                <div class="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-700">
-                    <label class="text-xs font-semibold text-slate-300 pl-1">Modal Awal:</label>
-                    <input type="text" inputmode="numeric" id="inputModalAwal" disabled placeholder="0" class="w-36 px-2.5 py-1 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-right font-semibold text-sm bg-slate-800 text-slate-400 cursor-not-allowed">
-                    <button id="btnUnlockModal" onclick="unlockModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition">🔒 Buka Kunci</button>
+         <div class="flex flex-wrap items-center gap-3">
+    <!-- Tombol Download PDF (Membuka Modal Pilihan) -->
+    <button onclick="openDownloadModal()" class="bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition">
+        📄 Download PDF
+    </button>
+
+    <div class="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-xl border border-slate-700">
+        <label class="text-xs font-semibold text-slate-300 pl-1">Modal Awal:</label>
+        <input type="text" inputmode="numeric" id="inputModalAwal" disabled placeholder="0" class="w-36 px-2.5 py-1 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-right font-semibold text-sm bg-slate-800 text-slate-400 cursor-not-allowed">
+        <button id="btnUnlockModal" onclick="unlockModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition">🔒 Buka Kunci</button>
+    </div>
+
+    <!-- Tombol Kunci Ulang / Lock System -->
+    <button onclick="lockApp()" title="Kunci Sistem" class="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white p-2.5 rounded-xl border border-slate-600 transition">
+        🔒
+    </button>
+</div>
+
+<!-- MODAL PILIH TIPE DOWNLOAD PDF (HARIAN & BULANAN) -->
+<div id="modalDownloadPDF" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl text-slate-100">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">📄 Download Laporan PDF</h3>
+            <button onclick="closeDownloadModal()" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
+        </div>
+        
+        <div class="space-y-4">
+            <!-- Pilihan Jenis Laporan (2 Opsi: Harian & Bulanan) -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Pilih Jenis Laporan:</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" id="btnOptDaily" onclick="selectDownloadType('daily')" 
+                        class="border-2 border-indigo-600 bg-indigo-600/20 text-white font-semibold text-xs py-2.5 rounded-xl transition">
+                        📅 Laporan Harian
+                    </button>
+                    <button type="button" id="btnOptMonthly" onclick="selectDownloadType('monthly')" 
+                        class="border-2 border-slate-700 bg-slate-900/50 text-slate-400 font-semibold text-xs py-2.5 rounded-xl transition">
+                        🗓️ Laporan Bulanan
+                    </button>
                 </div>
-                <!-- Tombol Kunci Ulang / Lock System -->
-                <button onclick="lockApp()" title="Kunci Sistem" class="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white p-2.5 rounded-xl border border-slate-600 transition">
-                    🔒
-                </button>
+            </div>
+
+            <!-- Input Filter Tanggal (Tampil Saat Opsi Harian Dipilih) -->
+            <div id="wrapperDateFilter" class="hidden">
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Pilih Tanggal Transaksi:</label>
+                <input type="date" id="filterTanggalPDF" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <!-- Input Filter Bulan (Tampil Saat Opsi Bulanan Dipilih) -->
+            <div id="wrapperMonthFilter" class="hidden">
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Pilih Bulan & Tahun Transaksi:</label>
+                <input type="month" id="filterBulanPDF" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
         </div>
+
+        <!-- Tombol Aksi -->
+        <div class="mt-6 flex justify-end gap-2">
+            <button onclick="closeDownloadModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-slate-300 transition">
+                Batal
+            </button>
+            <button onclick="processDownloadPDF()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 rounded-xl text-xs font-semibold text-white shadow-md transition">
+                Download PDF
+            </button>
+        </div>
+    </div>
+</div></div>
 
         <!-- Metric Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -436,25 +487,135 @@
             }
         };
 
-// 4. DOWNLOAD PDF (A4 PORTRAIT)
-window.downloadPDF = () => {
+let selectedDownloadOption = 'daily';
+
+// Buka Modal Download PDF
+window.openDownloadModal = () => {
+    document.getElementById('modalDownloadPDF').classList.remove('hidden');
+    
+    // Set default nilai tanggal & bulan hari ini
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const monthStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+    
+    document.getElementById('filterTanggalPDF').value = todayStr;
+    document.getElementById('filterBulanPDF').value = monthStr;
+    
+    // Default pilihan ke Harian saat modal terbuka
+    selectDownloadType('daily');
+};
+
+// Tutup Modal Download PDF
+window.closeDownloadModal = () => {
+    document.getElementById('modalDownloadPDF').classList.add('hidden');
+};
+
+// Pilihan Tipe Download ('daily' atau 'monthly')
+window.selectDownloadType = (type) => {
+    selectedDownloadOption = type;
+    const btnDaily = document.getElementById('btnOptDaily');
+    const btnMonthly = document.getElementById('btnOptMonthly');
+    
+    const wrapperDate = document.getElementById('wrapperDateFilter');
+    const wrapperMonth = document.getElementById('wrapperMonthFilter');
+
+    // Reset Style Tombol
+    btnDaily.className = 'border-2 border-slate-700 bg-slate-900/50 text-slate-400 font-semibold text-xs py-2.5 rounded-xl transition';
+    btnMonthly.className = 'border-2 border-slate-700 bg-slate-900/50 text-slate-400 font-semibold text-xs py-2.5 rounded-xl transition';
+    
+    wrapperDate.classList.add('hidden');
+    wrapperMonth.classList.add('hidden');
+
+    if (type === 'daily') {
+        btnDaily.className = 'border-2 border-indigo-600 bg-indigo-600/20 text-white font-semibold text-xs py-2.5 rounded-xl transition';
+        wrapperDate.classList.remove('hidden');
+    } else if (type === 'monthly') {
+        btnMonthly.className = 'border-2 border-indigo-600 bg-indigo-600/20 text-white font-semibold text-xs py-2.5 rounded-xl transition';
+        wrapperMonth.classList.remove('hidden');
+    }
+};
+
+// PROSES DOWNLOAD PDF UTAMA
+window.processDownloadPDF = () => {
+    let filteredList = [];
+    let headerSubTitle = "PT. BERKAH BAJA STEEL";
+    let reportTitle = "LAPORAN KAS";
+
+    // 1. FILTER HARIAN (YYYY-MM-DD)
+    if (selectedDownloadOption === 'daily') {
+        const selectedDateVal = document.getElementById('filterTanggalPDF').value;
+        if (!selectedDateVal) {
+            alert("Silakan pilih tanggal terlebih dahulu!");
+            return;
+        }
+
+        filteredList = transactionsList.filter(t => {
+            const rawDate = t.createdAt || t.updatedAt;
+            if (!rawDate) return false;
+            const d = new Date(rawDate);
+            const dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+            return dateStr === selectedDateVal;
+        });
+
+        if (filteredList.length === 0) {
+            alert(`Tidak ada transaksi pada tanggal ${selectedDateVal}.`);
+            return;
+        }
+
+        const dateObj = new Date(selectedDateVal);
+        const dateFormatted = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        
+        reportTitle = "LAPORAN KAS HARIAN";
+        headerSubTitle = `PT. BERKAH BAJA STEEL (${dateFormatted})`;
+
+    // 2. FILTER BULANAN (YYYY-MM)
+    } else if (selectedDownloadOption === 'monthly') {
+        const selectedMonthVal = document.getElementById('filterBulanPDF').value;
+        if (!selectedMonthVal) {
+            alert("Silakan pilih bulan terlebih dahulu!");
+            return;
+        }
+
+        filteredList = transactionsList.filter(t => {
+            const rawDate = t.createdAt || t.updatedAt;
+            if (!rawDate) return false;
+            const d = new Date(rawDate);
+            const monthStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+            return monthStr === selectedMonthVal;
+        });
+
+        if (filteredList.length === 0) {
+            alert(`Tidak ada transaksi pada bulan ${selectedMonthVal}.`);
+            return;
+        }
+
+        const [yearStr, monthNumStr] = selectedMonthVal.split('-');
+        const monthDateObj = new Date(yearStr, parseInt(monthNumStr) - 1, 1);
+        const monthFormatted = monthDateObj.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
+        reportTitle = "LAPORAN KAS BULANAN";
+        headerSubTitle = `PT. BERKAH BAJA STEEL (${monthFormatted})`;
+    }
+
+    closeDownloadModal();
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
     // Title / Header Surat
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
-    doc.text("LAPORAN KAS MODAL", 105, 18, { align: "center" });
+    doc.text(reportTitle, 105, 18, { align: "center" });
     
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
-    doc.text("PT. BERKAH BAJA STEEL", 105, 24, { align: "center" });
+    doc.text(headerSubTitle, 105, 24, { align: "center" });
 
     const today = new Date();
-    const dateFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const todayFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    // 1. Table Transaksi Utama (Tanggal, Keterangan, Tipe Center, Nominal)
-    const tableBody = transactionsList.map(t => [
+    // Tabel Transaksi
+    const tableBody = filteredList.map(t => [
         formatDate(t.createdAt || t.updatedAt),
         t.desc,
         t.type === 'penjualan' ? 'INVOICE / Pendapatan' : 'Pengeluaran',
@@ -465,43 +626,50 @@ window.downloadPDF = () => {
     doc.autoTable({
         startY: 32,
         margin: { left: 14 },
-     head: [[
-    'Tanggal',
-    'Keterangan Item / Transaksi', 
-    { content: 'Tipe', styles: { halign: 'center' } }, 
-    { content: 'Nominal', colSpan: 2, styles: { halign: 'center' } }
-]],
+        head: [[
+            'Tanggal',
+            'Keterangan Item / Transaksi', 
+            { content: 'Tipe', styles: { halign: 'center' } }, 
+            { content: 'Nominal', colSpan: 2, styles: { halign: 'center' } }
+        ]],
         body: tableBody,
         theme: 'grid',
         headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
         columnStyles: {
-            0: { cellWidth: 24 }, // Kolom Tanggal
-            1: { cellWidth: 88 }, // Keterangan Item (Diperbesar dari 67mm ke 77mm)
-            2: { cellWidth: 32, halign: 'center' }, // Tipe (Diperkecil dari 45mm ke 35mm & Rata Tengah)
-            3: { cellWidth: 12, halign: 'left' },  // 'Rp.' Lurus Rata Kiri
-            4: { cellWidth: 25, halign: 'right' }  // Nominal Angka Rata Kanan
+            0: { cellWidth: 24 },
+            1: { cellWidth: 88 },
+            2: { cellWidth: 32, halign: 'center' },
+            3: { cellWidth: 12, halign: 'left' },
+            4: { cellWidth: 25, halign: 'right' }
         }
     });
 
     let finalY = doc.lastAutoTable.finalY + 8;
-
     if (finalY > 210) {
         doc.addPage();
         finalY = 20;
     }
 
-    // 2. Table Ringkasan Keuangan
+    // Hitung Ringkasan Keuangan
+    const subPengeluaran = filteredList.filter(t => t.type !== 'penjualan').reduce((sum, t) => sum + Number(t.amount || 0), 0);
+    const subPenjualan = filteredList.filter(t => t.type === 'penjualan').reduce((sum, t) => sum + Number(t.amount || 0), 0);
+    const subLaba = subPenjualan - subPengeluaran;
+
+    const labelSuffix = selectedDownloadOption === 'daily' ? 'HARIAN' : 'BULANAN';
+
+    const summaryRows = [
+        [`TOTAL PENGELUARAN ${labelSuffix}`, 'Rp.', formatNumberOnly(subPengeluaran)],
+        [`TOTAL PENJUALAN ${labelSuffix}`, 'Rp.', formatNumberOnly(subPenjualan)],
+        [`LABA BERSIH ${labelSuffix}`, 'Rp.', formatNumberOnly(subLaba)]
+    ];
+
+    // Tabel Ringkasan Keuangan
     doc.autoTable({
         startY: finalY,
         margin: { left: 14 },
         tableWidth: 100,
         head: [['RINGKASAN KEUANGAN', { content: 'NOMINAL', colSpan: 2, styles: { halign: 'center' } }]],
-        body: [
-            ['MODAL AWAL', 'Rp.', formatNumberOnly(currentModalAwal)],
-            ['TOTAL PENGELUARAN', 'Rp.', formatNumberOnly(currentTotalPengeluaran)],
-            ['TOTAL PENJUALAN (INVOICE)', 'Rp.', formatNumberOnly(currentTotalPenjualan)],
-            ['LABA BERSIH (MARGIN)', 'Rp.', formatNumberOnly(currentLabaBersih)]
-        ],
+        body: summaryRows,
         theme: 'grid',
         headStyles: { fillColor: [51, 65, 85], textColor: 255, fontStyle: 'bold' },
         styles: { fontSize: 9, cellPadding: 2 },
@@ -518,11 +686,11 @@ window.downloadPDF = () => {
         summaryY = 25;
     }
 
-    // 3. Tanda Tangan
+    // Tanda Tangan
     const signX = 160;
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text(`Cilegon, ${dateFormatted}`, signX, summaryY, { align: "center" });
+    doc.text(`Cilegon, ${todayFormatted}`, signX, summaryY, { align: "center" });
     doc.text("Hormat Kami,", signX, summaryY + 6, { align: "center" });
     
     doc.setFont("helvetica", "bold");
@@ -530,20 +698,26 @@ window.downloadPDF = () => {
     doc.setFont("helvetica", "normal");
     doc.text("Manager", signX, summaryY + 33, { align: "center" });
 
-    // Download PDF
-    doc.save(`Laporan_Kas_Modal_BBS_${today.toISOString().split('T')[0]}.pdf`);
+    // Penamaan File PDF
+    const fileNameSuffix = selectedDownloadOption === 'daily' 
+        ? `Harian_${document.getElementById('filterTanggalPDF').value}` 
+        : `Bulanan_${document.getElementById('filterBulanPDF').value}`;
 
-    // 4. Konfirmasi Hapus Data Setelah Download
-    setTimeout(() => {
-        if (confirm("Laporan PDF berhasil didownload!\n\nApakah Anda ingin menghapus SELURUH data transaksi di Firebase?")) {
-            const transaksiRef = ref(db, 'sistem_kas/transaksi');
-            remove(transaksiRef).then(() => {
-                alert("Seluruh data transaksi berhasil dihapus dari sistem.");
-            }).catch((err) => {
-                alert("Gagal menghapus data: " + err.message);
-            });
-        }
-    }, 500);
+    doc.save(`Laporan_Kas_${fileNameSuffix}.pdf`);
+
+    // 4. Konfirmasi Hapus Data (Hanya muncul saat download Laporan BULANAN)
+    if (selectedDownloadOption === 'monthly') {
+        setTimeout(() => {
+            if (confirm("Laporan PDF Bulanan berhasil didownload!\n\nApakah Anda ingin menghapus SELURUH data transaksi di Firebase?")) {
+                const transaksiRef = ref(db, 'sistem_kas/transaksi');
+                remove(transaksiRef).then(() => {
+                    alert("Seluruh data transaksi berhasil dihapus dari sistem.");
+                }).catch((err) => {
+                    alert("Gagal menghapus data: " + err.message);
+                });
+            }
+        }, 500);
+    }
 };
 
 // 5. REALTIME FIREBASE SYNC
