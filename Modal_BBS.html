@@ -194,7 +194,8 @@
     <!-- Firebase SDK v10 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        // PERBAIKAN: Menambahkan 'update' pada baris import di bawah ini
+        import { getDatabase, ref, set, push, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -222,8 +223,9 @@
         let transactionsList = [];
         let editingKey = null;
 
-        // Password untuk Modal Awal (bisa disesuaikan)
+        // Password untuk Modal Awal & Keuangan
         const MODAL_PASSWORD = "BBS2026"; 
+        const PASSWORD_KEUANGAN = "BBS2026";
 
         const formatIDR = (num) => {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num || 0);
@@ -240,9 +242,18 @@
             return parseFloat(String(formattedStr).replace(/,/g, '')) || 0;
         };
 
+        const formatNumberOnly = (num) => {
+            return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(num || 0);
+        };
 
-        // UBAH PASSWORD APLIKASI DI SINI:
-        const PASSWORD_KEUANGAN = "BBS2026";
+        const formatDate = (timestamp) => {
+            if (!timestamp) return '-';
+            return new Date(timestamp).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+        };
 
         document.addEventListener("DOMContentLoaded", () => {
             const loginModal = document.getElementById("loginModal");
@@ -250,55 +261,60 @@
             const inputPassword = document.getElementById("inputPassword");
             const loginError = document.getElementById("loginError");
 
-            // Cek apakah user sudah memasukkan password dalam sesi browser saat ini
             if (sessionStorage.getItem("kas_authenticated") === "true") {
-                loginModal.classList.add("hidden");
+                if (loginModal) loginModal.classList.add("hidden");
             } else {
-                loginModal.classList.remove("hidden");
-                inputPassword.focus();
+                if (loginModal) loginModal.classList.remove("hidden");
+                if (inputPassword) inputPassword.focus();
             }
 
-            // Verifikasi Form Password
-            loginForm.addEventListener("submit", (e) => {
-                e.preventDefault();
-                if (inputPassword.value === PASSWORD_KEUANGAN) {
-                    sessionStorage.setItem("kas_authenticated", "true");
-                    loginModal.classList.add("hidden");
-                    loginError.classList.add("hidden");
-                    inputPassword.value = "";
-                } else {
-                    loginError.classList.remove("hidden");
-                    inputPassword.value = "";
-                    inputPassword.focus();
-                }
-            });
+            if (loginForm) {
+                loginForm.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    if (inputPassword.value === PASSWORD_KEUANGAN) {
+                        sessionStorage.setItem("kas_authenticated", "true");
+                        loginModal.classList.add("hidden");
+                        loginError.classList.add("hidden");
+                        inputPassword.value = "";
+                    } else {
+                        loginError.classList.remove("hidden");
+                        inputPassword.value = "";
+                        inputPassword.focus();
+                    }
+                });
+            }
         });
 
-        // Fungsi Kunci Ulang Manual (Tombol Gembok)
-        function lockApp() {
+        // PERBAIKAN: Dibuat ke scope window agar bisa dipanggil tombol gembok di HTML
+        window.lockApp = () => {
             sessionStorage.removeItem("kas_authenticated");
             const loginModal = document.getElementById("loginModal");
-            loginModal.classList.remove("hidden");
-            document.getElementById("inputPassword").focus();
-        }
+            if (loginModal) loginModal.classList.remove("hidden");
+            const inputPassword = document.getElementById("inputPassword");
+            if (inputPassword) inputPassword.focus();
+        };
 
         // 1. UPDATE WARNA DROPDOWN DINAMIS
         const txTypeSelect = document.getElementById('txType');
         function updateDropdownColor() {
+            if (!txTypeSelect) return;
             if (txTypeSelect.value === 'pengeluaran') {
                 txTypeSelect.className = "w-full border-2 border-red-700 bg-red-600 text-white font-bold px-3 py-2 rounded-lg focus:ring-2 focus:ring-red-400 transition-all shadow-sm";
             } else {
                 txTypeSelect.className = "w-full border-2 border-green-700 bg-green-600 text-white font-bold px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-400 transition-all shadow-sm";
             }
         }
-        txTypeSelect.addEventListener('change', updateDropdownColor);
-        updateDropdownColor();
+        if (txTypeSelect) {
+            txTypeSelect.addEventListener('change', updateDropdownColor);
+            updateDropdownColor();
+        }
 
         // 2. FITUR PASSWORD MODAL AWAL
         const inputModal = document.getElementById('inputModalAwal');
         const btnUnlock = document.getElementById('btnUnlockModal');
 
         window.unlockModal = () => {
+            if (!inputModal || !btnUnlock) return;
             if (inputModal.disabled) {
                 const pass = prompt("Masukkan password untuk mengubah Modal Awal:");
                 if (pass === MODAL_PASSWORD) {
@@ -320,97 +336,105 @@
             }
         };
 
-        inputModal.addEventListener('input', (e) => {
-            e.target.value = formatNumberWithCommas(e.target.value);
-        });
+        if (inputModal) {
+            inputModal.addEventListener('input', (e) => {
+                e.target.value = formatNumberWithCommas(e.target.value);
+            });
 
-        inputModal.addEventListener('change', (e) => {
-            const val = parseRawNumber(e.target.value);
-            set(modalRef, val);
-        });
+            inputModal.addEventListener('change', (e) => {
+                const val = parseRawNumber(e.target.value);
+                set(modalRef, val);
+            });
+        }
 
-        // Helper format angka tanpa simbol Rp (misal: 1.000.000)
-const formatNumberOnly = (num) => {
-    return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(num || 0);
-};
+        // 3. FITUR TAMBAH & EDIT TRANSAKSI
+        const inputAmount = document.getElementById('txAmount');
+        if (inputAmount) {
+            inputAmount.addEventListener('input', (e) => {
+                e.target.value = formatNumberWithCommas(e.target.value);
+            });
+        }
 
-// Helper format tanggal (misal: 04 Nov 2026)
-const formatDate = (timestamp) => {
-    if (!timestamp) return '-';
-    return new Date(timestamp).toLocaleDateString('id-ID', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-    });
-};
+        const txForm = document.getElementById('txForm');
+        if (txForm) {
+            txForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const type = txTypeSelect ? txTypeSelect.value : '';
+                const desc = document.getElementById('txDesc').value.trim();
+                const amount = parseRawNumber(inputAmount.value);
 
-// 3. FITUR TAMBAH & EDIT TRANSAKSI
-const inputAmount = document.getElementById('txAmount');
-inputAmount.addEventListener('input', (e) => {
-    e.target.value = formatNumberWithCommas(e.target.value);
-});
+                if (!desc || isNaN(amount) || amount <= 0) return;
 
-document.getElementById('txForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const type = txTypeSelect.value;
-    const desc = document.getElementById('txDesc').value.trim();
-    const amount = parseRawNumber(inputAmount.value);
+                if (editingKey) {
+                    // Mode Update
+                    const itemRef = ref(db, `sistem_kas/transaksi/${editingKey}`);
+                    update(itemRef, {
+                        type,
+                        desc,
+                        amount,
+                        updatedAt: Date.now()
+                    }).then(() => {
+                        cancelEdit();
+                    });
+                } else {
+                    // Mode Tambah Baru
+                    push(transaksiRef, {
+                        type,
+                        desc,
+                        amount,
+                        createdAt: Date.now()
+                    }).then(() => {
+                        document.getElementById('txDesc').value = '';
+                        if (inputAmount) inputAmount.value = '';
+                    });
+                }
+            });
+        }
 
-    if (!desc || amount <= 0) return;
+        window.editTx = (key, desc, type, amount) => {
+            editingKey = key;
+            const formTitle = document.getElementById('formTitle');
+            const txDesc = document.getElementById('txDesc');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnCancelEdit = document.getElementById('btnCancelEdit');
 
-    if (editingKey) {
-        // Mode Update (Menggunakan update agar createdAt tidak terhapus)
-        const itemRef = ref(db, `sistem_kas/transaksi/${editingKey}`);
-        update(itemRef, {
-            type,
-            desc,
-            amount,
-            updatedAt: Date.now()
-        }).then(() => {
-            cancelEdit();
-        });
-    } else {
-        // Mode Tambah Baru (Menyimpan createdAt otomatis)
-        push(transaksiRef, {
-            type,
-            desc,
-            amount,
-            createdAt: Date.now()
-        }).then(() => {
-            document.getElementById('txDesc').value = '';
-            inputAmount.value = '';
-        });
-    }
-});
+            if (formTitle) formTitle.innerText = "Edit Transaksi";
+            if (txDesc) txDesc.value = desc;
+            if (txTypeSelect) {
+                txTypeSelect.value = type;
+                updateDropdownColor();
+            }
+            if (inputAmount) inputAmount.value = formatNumberWithCommas(amount);
+            if (btnSubmit) {
+                btnSubmit.innerText = "💾 Simpan Perubahan";
+                btnSubmit.className = "flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
+            }
+            if (btnCancelEdit) btnCancelEdit.classList.remove('hidden');
+        };
 
-window.editTx = (key, desc, type, amount) => {
-    editingKey = key;
-    document.getElementById('formTitle').innerText = "Edit Transaksi";
-    document.getElementById('txDesc').value = desc;
-    txTypeSelect.value = type;
-    updateDropdownColor();
-    inputAmount.value = formatNumberWithCommas(amount);
-    document.getElementById('btnSubmit').innerText = "💾 Simpan Perubahan";
-    document.getElementById('btnSubmit').className = "flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
-    document.getElementById('btnCancelEdit').classList.remove('hidden');
-};
+        window.cancelEdit = () => {
+            editingKey = null;
+            const formTitle = document.getElementById('formTitle');
+            const txDesc = document.getElementById('txDesc');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnCancelEdit = document.getElementById('btnCancelEdit');
 
-window.cancelEdit = () => {
-    editingKey = null;
-    document.getElementById('formTitle').innerText = "Input Transaksi";
-    document.getElementById('txDesc').value = '';
-    inputAmount.value = '';
-    document.getElementById('btnSubmit').innerText = "+ Simpan Transaksi";
-    document.getElementById('btnSubmit').className = "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
-    document.getElementById('btnCancelEdit').classList.add('hidden');
-};
+            if (formTitle) formTitle.innerText = "Input Transaksi";
+            if (txDesc) txDesc.value = '';
+            if (inputAmount) inputAmount.value = '';
+            if (btnSubmit) {
+                btnSubmit.innerText = "+ Simpan Transaksi";
+                btnSubmit.className = "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
+            }
+            if (btnCancelEdit) btnCancelEdit.classList.add('hidden');
+        };
 
-window.deleteTx = (key) => {
-    if (confirm('Hapus transaksi ini?')) {
-        const itemRef = ref(db, `sistem_kas/transaksi/${key}`);
-        remove(itemRef);
-    }
-};
+        window.deleteTx = (key) => {
+            if (confirm('Hapus transaksi ini?')) {
+                const itemRef = ref(db, `sistem_kas/transaksi/${key}`);
+                remove(itemRef);
+            }
+        };
 
 // 4. DOWNLOAD PDF (A4 PORTRAIT)
 window.downloadPDF = () => {
