@@ -614,7 +614,7 @@ window.processDownloadPDF = () => {
     const today = new Date();
     const todayFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    // Tabel Transaksi
+    // Tabel Transaksi Periode Terpilih
     const tableBody = filteredList.map(t => [
         formatDate(t.createdAt || t.updatedAt),
         t.desc,
@@ -650,17 +650,21 @@ window.processDownloadPDF = () => {
         finalY = 20;
     }
 
-    // Hitung Ringkasan Keuangan
+    // Hitung Ringkasan Keuangan Periode Terpilih
     const subPengeluaran = filteredList.filter(t => t.type !== 'penjualan').reduce((sum, t) => sum + Number(t.amount || 0), 0);
     const subPenjualan = filteredList.filter(t => t.type === 'penjualan').reduce((sum, t) => sum + Number(t.amount || 0), 0);
     const subLaba = subPenjualan - subPengeluaran;
+
+    // SALDO / KAS AKHIR: Mengambil data Kas Akhir Sistem langsung dari variabel onValue (kasAkhir)
+    const saldoKasAkhirOnValue = currentModalAwal - currentTotalPengeluaran + currentTotalPenjualan;
 
     const labelSuffix = selectedDownloadOption === 'daily' ? 'HARIAN' : 'BULANAN';
 
     const summaryRows = [
         [`TOTAL PENGELUARAN ${labelSuffix}`, 'Rp.', formatNumberOnly(subPengeluaran)],
         [`TOTAL PENJUALAN ${labelSuffix}`, 'Rp.', formatNumberOnly(subPenjualan)],
-        [`LABA BERSIH ${labelSuffix}`, 'Rp.', formatNumberOnly(subLaba)]
+        [`LABA BERSIH ${labelSuffix}`, 'Rp.', formatNumberOnly(subLaba)],
+        [`SALDO BCA DIRUT`, 'Rp.', formatNumberOnly(saldoKasAkhirOnValue)]
     ];
 
     // Tabel Ringkasan Keuangan
@@ -705,7 +709,7 @@ window.processDownloadPDF = () => {
 
     doc.save(`Laporan_Kas_${fileNameSuffix}.pdf`);
 
-    // 4. Konfirmasi Hapus Data (Hanya muncul saat download Laporan BULANAN)
+    // Konfirmasi Hapus Data (Hanya muncul saat download Laporan BULANAN)
     if (selectedDownloadOption === 'monthly') {
         setTimeout(() => {
             if (confirm("Laporan PDF Bulanan berhasil didownload!\n\nApakah Anda ingin menghapus SELURUH data transaksi di Firebase?")) {
