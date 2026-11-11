@@ -724,6 +724,25 @@ window.processDownloadPDF = () => {
     }
 };
 
+function formatTanggalDenganHari(tanggalStr) {
+    if (!tanggalStr) return '-';
+    
+    const d = new Date(tanggalStr);
+    
+    // Jika format tanggal valid
+    if (!isNaN(d.getTime())) {
+        return d.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+    
+    // Fallback jika berupa teks biasa
+    return tanggalStr;
+}
+
 // 5. REALTIME FIREBASE SYNC
 onValue(rootRef, (snapshot) => {
     const data = snapshot.val() || {};
@@ -759,7 +778,8 @@ onValue(rootRef, (snapshot) => {
             if (t.type === 'pengeluaran') currentTotalPengeluaran += t.amount;
             if (t.type === 'penjualan') currentTotalPenjualan += t.amount;
 
-            const tglFormatted = formatDate(t.createdAt || t.updatedAt);
+            // Menggunakan fungsi formatTanggalDenganHari agar muncul nama harinya
+            const tglFormatted = formatTanggalDenganHari(t.createdAt || t.updatedAt);
 
             const row = document.createElement('tr');
             row.className = "hover:bg-slate-700/30 border-b border-slate-700/60";
