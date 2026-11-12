@@ -64,25 +64,22 @@
         <div class="flex items-center justify-between bg-gray-800 p-3 rounded-xl border border-gray-700 shadow-md">
             <div>
                 <h1 class="text-base font-bold text-white flex items-center gap-1.5">
-                    KAS Mobile
+                    📱 Kas Mobile
                     <span id="syncBadge" class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
                 </h1>
                 <p class="text-[10px] text-gray-400">PT. Berkah Baja Steel</p>
             </div>
 
-            <!-- Modal Awal & PDF & Kunci (Ringkas) -->
-            <div class="flex items-center gap-1.5">
-                <button onclick="unlockModal()" id="btnUnlockModal" class="bg-gray-700 hover:bg-gray-600 active:scale-95 text-[11px] px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 border border-gray-600 transition">
-                    🔒 Modal
-                </button>
-                <button onclick="downloadPDF()" class="bg-red-600 hover:bg-red-700 active:scale-95 text-[11px] px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 shadow transition">
-                    📄 PDF
-                </button>
-                <!-- Tombol Kunci Ulang Manual -->
-                <button onclick="lockApp()" title="Kunci Aplikasi" class="bg-gray-700 hover:bg-gray-600 active:scale-95 text-[11px] p-1.5 rounded-lg border border-gray-600 transition">
-                    🔒
-                </button>
-            </div>
+<!-- Modal Awal & Kunci (Ringkas) -->
+<div class="flex items-center gap-1.5">
+    <button onclick="unlockModal()" id="btnUnlockModal" class="bg-gray-700 hover:bg-gray-600 active:scale-95 text-[11px] px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 border border-gray-600 transition">
+        🔒 Modal
+    </button>
+    <!-- Tombol Kunci Ulang Manual -->
+    <button onclick="lockApp()" title="Kunci Aplikasi" class="bg-gray-700 hover:bg-gray-600 active:scale-95 text-[11px] p-1.5 rounded-lg border border-gray-600 transition">
+        🔒
+    </button>
+</div>
         </div>
 
         <!-- Input Modal Awal (Hidden default/di-unlock via Password) -->
@@ -146,43 +143,49 @@
     </div>
 
     <!-- POPUP MODAL INPUT DATA (PENGELUARAN / INVOICE) -->
-    <div id="inputModalPopup" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity">
-        <div class="bg-gray-800 w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-gray-700 p-6 shadow-2xl space-y-4 animate-slide-up">
-            
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-                <div class="flex items-center gap-2">
-                    <span id="modalIndicator" class="w-3 h-3 rounded-full bg-red-500"></span>
-                    <h3 id="modalTitle" class="text-lg font-bold text-white">Input Pengeluaran</h3>
-                </div>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-xl font-bold p-1">✕</button>
+<div id="inputModalPopup" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity">
+    <div class="bg-gray-800 w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-gray-700 p-6 shadow-2xl space-y-4 animate-slide-up">
+        
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+            <div class="flex items-center gap-2">
+                <span id="modalIndicator" class="w-3 h-3 rounded-full bg-red-500"></span>
+                <h3 id="modalTitle" class="text-lg font-bold text-white">Input Pengeluaran</h3>
+            </div>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-white text-xl font-bold p-1">✕</button>
+        </div>
+
+        <!-- Form -->
+        <form id="mobileTxForm" class="space-y-4">
+            <input type="hidden" id="txType">
+
+            <!-- Tanggal Transaksi -->
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Tanggal Transaksi</label>
+                <input type="date" id="txDate" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 [color-scheme:dark]">
             </div>
 
-            <!-- Form -->
-            <form id="mobileTxForm" class="space-y-4">
-                <input type="hidden" id="txType">
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Keterangan / Detail Item</label>
+                <input type="text" id="txDesc" required placeholder="Contoh: Beli Material / Ongkos Mobil" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
+            </div>
 
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1">Keterangan / Detail Item</label>
-                    <input type="text" id="txDesc" required placeholder="Contoh: Beli Material / Ongkos Mobil" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
-                </div>
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Nominal (Rp)</label>
+                <input type="text" inputmode="numeric" id="txAmount" required placeholder="0" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-lg font-bold text-white focus:outline-none focus:border-blue-500">
+            </div>
 
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1">Nominal (Rp)</label>
-                    <input type="text" inputmode="numeric" id="txAmount" required placeholder="0" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-lg font-bold text-white focus:outline-none focus:border-blue-500">
-                </div>
-
-                <div class="pt-2 flex gap-3">
-                    <button type="button" onclick="closeModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-3 rounded-xl text-sm transition">
-                        Batal
-                    </button>
-                    <button type="submit" id="btnSubmitModal" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition">
-                        Simpan
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="pt-2 flex gap-3">
+                <button type="button" onclick="closeModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-3 rounded-xl text-sm transition">
+                    Batal
+                </button>
+                <button type="submit" id="btnSubmitModal" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition">
+                    Simpan
+                </button>
+            </div>
+        </form>
     </div>
+</div>
 
     <!-- Firebase SDK v10 (ES Modules) -->
     <script type="module">
@@ -336,16 +339,19 @@
             modalPopup.classList.add('hidden');
         };
 
-        // Submit Form dari PopUp
+       // Submit Form dari PopUp
         document.getElementById('mobileTxForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            const inputDate = document.getElementById('txDate');
+            const date = inputDate ? inputDate.value : new Date().toISOString().split('T')[0];
             const type = txTypeInput.value;
             const desc = document.getElementById('txDesc').value.trim();
             const amount = parseRawNumber(inputAmount.value);
 
-            if (!desc || amount <= 0) return;
+            if (!date || !desc || amount <= 0) return;
 
             push(transaksiRef, {
+                date,      // <-- Menyimpan tanggal ke Firebase
                 type,
                 desc,
                 amount,
@@ -363,193 +369,94 @@
             }
         };
 
-        // Helper format tanggal (misal: 04 Nov 2026)
-        const formatDate = (timestamp) => {
-            if (!timestamp) return '-';
-            return new Date(timestamp).toLocaleDateString('id-ID', {
+        // Helper format tanggal (mendukung format string 'YYYY-MM-DD' maupun Timestamp)
+        const formatDate = (rawDate) => {
+            if (!rawDate) return '-';
+            let d;
+            if (typeof rawDate === 'string' && rawDate.includes('-') && !rawDate.includes('T')) {
+                d = new Date(rawDate + 'T00:00:00');
+            } else {
+                d = new Date(rawDate);
+            }
+
+            if (isNaN(d.getTime())) return '-';
+
+            return d.toLocaleDateString('id-ID', {
                 day: '2-digit',
                 month: 'short',
                 year: 'numeric'
             });
         };
 
-        // DOWNLOAD PDF LAPORAN
-        window.downloadPDF = () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-    // Title / Header Surat
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text("LAPORAN KAS MODAL", 105, 18, { align: "center" });
+             // SYNC REALTIME FIREBASE (MOBILE VERSI)
+    onValue(rootRef, (snapshot) => {
+    const data = snapshot.val() || {};
     
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "normal");
-    doc.text("PT. BERKAH BAJA STEEL", 105, 24, { align: "center" });
+    const badge = document.getElementById('syncBadge');
+    if (badge) badge.className = "w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]";
 
-    const today = new Date();
-    const dateFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-
-    // 1. Table Transaksi Utama (Tanggal, Keterangan, Tipe Center, Nominal)
-    const tableBody = transactionsList.map(t => [
-        formatDate(t.createdAt || t.updatedAt),
-        t.desc,
-        t.type === 'penjualan' ? 'INVOICE / Pendapatan' : 'Pengeluaran',
-        t.type === 'penjualan' ? '+ Rp.' : '- Rp.',
-        formatNumberOnly(t.amount)
-    ]);
-
-    doc.autoTable({
-        startY: 32,
-        margin: { left: 14 },
-     head: [[
-    'Tanggal',
-    'Keterangan Item / Transaksi', 
-    { content: 'Tipe', styles: { halign: 'center' } }, 
-    { content: 'Nominal', colSpan: 2, styles: { halign: 'center' } }
-]],
-        body: tableBody,
-        theme: 'grid',
-        headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
-        columnStyles: {
-            0: { cellWidth: 24 }, // Kolom Tanggal
-            1: { cellWidth: 88 }, // Keterangan Item (Diperbesar dari 67mm ke 77mm)
-            2: { cellWidth: 32, halign: 'center' }, // Tipe (Diperkecil dari 45mm ke 35mm & Rata Tengah)
-            3: { cellWidth: 12, halign: 'left' },  // 'Rp.' Lurus Rata Kiri
-            4: { cellWidth: 25, halign: 'right' }  // Nominal Angka Rata Kanan
-        }
-    });
-
-    let finalY = doc.lastAutoTable.finalY + 8;
-
-    if (finalY > 210) {
-        doc.addPage();
-        finalY = 20;
+    currentModalAwal = parseFloat(data.modal_awal) || 0;
+    if (document.activeElement !== inputModal) {
+        inputModal.value = currentModalAwal > 0 ? formatNumberWithCommas(currentModalAwal) : '';
     }
 
-    // 2. Table Ringkasan Keuangan
-    doc.autoTable({
-        startY: finalY,
-        margin: { left: 14 },
-        tableWidth: 100,
-        head: [['RINGKASAN KEUANGAN', { content: 'NOMINAL', colSpan: 2, styles: { halign: 'center' } }]],
-        body: [
-            ['MODAL AWAL', 'Rp.', formatNumberOnly(currentModalAwal)],
-            ['TOTAL PENGELUARAN', 'Rp.', formatNumberOnly(currentTotalPengeluaran)],
-            ['TOTAL PENJUALAN (INVOICE)', 'Rp.', formatNumberOnly(currentTotalPenjualan)],
-            ['LABA BERSIH (MARGIN)', 'Rp.', formatNumberOnly(currentLabaBersih)]
-        ],
-        theme: 'grid',
-        headStyles: { fillColor: [51, 65, 85], textColor: 255, fontStyle: 'bold' },
-        styles: { fontSize: 9, cellPadding: 2 },
-        columnStyles: {
-            0: { fontStyle: 'bold', cellWidth: 55 },
-            1: { halign: 'left', fontStyle: 'bold', cellWidth: 12 },
-            2: { halign: 'right', fontStyle: 'bold', cellWidth: 33 }
-        }
-    });
+    const transaksiObj = data.transaksi || {};
+    currentTotalPengeluaran = 0;
+    currentTotalPenjualan = 0;
+    transactionsList = [];
 
-    let summaryY = doc.lastAutoTable.finalY + 12;
-    if (summaryY > 240) {
-        doc.addPage();
-        summaryY = 25;
-    }
+    const recentListContainer = document.getElementById('recentTxList');
+    if (recentListContainer) recentListContainer.innerHTML = '';
 
-    // 3. Tanda Tangan
-    const signX = 160;
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Cilegon, ${dateFormatted}`, signX, summaryY, { align: "center" });
-    doc.text("Hormat Kami,", signX, summaryY + 6, { align: "center" });
-    
-    doc.setFont("helvetica", "bold");
-    doc.text("Yefry Desfirmanza", signX, summaryY + 28, { align: "center" });
-    doc.setFont("helvetica", "normal");
-    doc.text("Manager", signX, summaryY + 33, { align: "center" });
+    const keys = Object.keys(transaksiObj);
 
-    // Download PDF
-    doc.save(`Laporan_Kas_Modal_BBS_${today.toISOString().split('T')[0]}.pdf`);
+    if (keys.length === 0) {
+        if (recentListContainer) recentListContainer.innerHTML = '<div class="text-center text-xs text-gray-500 py-3">Belum ada transaksi.</div>';
+    } else {
+        keys.reverse().forEach((key, index) => {
+            const t = transaksiObj[key];
+            t.key = key;
+            transactionsList.push(t);
 
-    // 4. Konfirmasi Hapus Data Setelah Download
-    setTimeout(() => {
-        if (confirm("Laporan PDF berhasil didownload!\n\nApakah Anda ingin menghapus SELURUH data transaksi di Firebase?")) {
-            const transaksiRef = ref(db, 'sistem_kas/transaksi');
-            remove(transaksiRef).then(() => {
-                alert("Seluruh data transaksi berhasil dihapus dari sistem.");
-            }).catch((err) => {
-                alert("Gagal menghapus data: " + err.message);
-            });
-        }
-    }, 500);
-};
+            if (t.type === 'pengeluaran') currentTotalPengeluaran += t.amount;
+            if (t.type === 'penjualan') currentTotalPenjualan += t.amount;
 
-        // SYNC REALTIME FIREBASE
-        onValue(rootRef, (snapshot) => {
-            const data = snapshot.val() || {};
-            
-            const badge = document.getElementById('syncBadge');
-            if (badge) badge.className = "w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]";
+            // Tampilkan max 5 riwayat terbaru di HP (prioritas t.date)
+            if (recentListContainer && index < 5) {
+                const rawDate = t.date || t.createdAt || t.updatedAt;
+                const tglFormatted = formatDate(rawDate);
 
-            currentModalAwal = parseFloat(data.modal_awal) || 0;
-            if (document.activeElement !== inputModal) {
-                inputModal.value = currentModalAwal > 0 ? formatNumberWithCommas(currentModalAwal) : '';
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "flex justify-between items-center bg-gray-900/80 p-2.5 rounded-xl border border-gray-700/50 text-xs";
+                itemDiv.innerHTML = `
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <span class="w-2 h-2 rounded-full flex-shrink-0 ${t.type === 'penjualan' ? 'bg-emerald-500' : 'bg-red-500'}"></span>
+                        <div class="overflow-hidden">
+                            <div class="text-[10px] text-gray-400 font-normal">📅 ${tglFormatted}</div>
+                            <div class="truncate font-medium text-gray-200">${t.desc}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="font-bold ${t.type === 'penjualan' ? 'text-emerald-400' : 'text-red-400'}">
+                            ${t.type === 'penjualan' ? '+' : '-'} ${formatIDR(t.amount)}
+                        </span>
+                        <button onclick="deleteTx('${key}')" class="text-gray-500 hover:text-red-400 text-xs font-bold px-1">✕</button>
+                    </div>
+                `;
+                recentListContainer.appendChild(itemDiv);
             }
-
-            const transaksiObj = data.transaksi || {};
-            currentTotalPengeluaran = 0;
-            currentTotalPenjualan = 0;
-            transactionsList = [];
-
-            const recentListContainer = document.getElementById('recentTxList');
-            if (recentListContainer) recentListContainer.innerHTML = '';
-
-            const keys = Object.keys(transaksiObj);
-
-            if (keys.length === 0) {
-                if (recentListContainer) recentListContainer.innerHTML = '<div class="text-center text-xs text-gray-500 py-3">Belum ada transaksi.</div>';
-            } else {
-                keys.reverse().forEach((key, index) => {
-                    const t = transaksiObj[key];
-                    t.key = key;
-                    transactionsList.push(t);
-
-                    if (t.type === 'pengeluaran') currentTotalPengeluaran += t.amount;
-                    if (t.type === 'penjualan') currentTotalPenjualan += t.amount;
-
-                    // Tampilkan max 5 riwayat terbaru di HP beserta tanggal
-                    if (recentListContainer && index < 5) {
-                        const tglFormatted = formatDate(t.createdAt || t.updatedAt);
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = "flex justify-between items-center bg-gray-900/80 p-2.5 rounded-xl border border-gray-700/50 text-xs";
-                        itemDiv.innerHTML = `
-                            <div class="flex items-center gap-2 overflow-hidden">
-                                <span class="w-2 h-2 rounded-full flex-shrink-0 ${t.type === 'penjualan' ? 'bg-emerald-500' : 'bg-red-500'}"></span>
-                                <div class="overflow-hidden">
-                                    <div class="text-[10px] text-gray-400 font-normal">📅 ${tglFormatted}</div>
-                                    <div class="truncate font-medium text-gray-200">${t.desc}</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 flex-shrink-0">
-                                <span class="font-bold ${t.type === 'penjualan' ? 'text-emerald-400' : 'text-red-400'}">
-                                    ${t.type === 'penjualan' ? '+' : '-'} ${formatIDR(t.amount)}
-                                </span>
-                                <button onclick="deleteTx('${key}')" class="text-gray-500 hover:text-red-400 text-xs font-bold px-1">✕</button>
-                            </div>
-                        `;
-                        recentListContainer.appendChild(itemDiv);
-                    }
-                });
-            }
-
-            currentLabaBersih = currentTotalPenjualan - currentTotalPengeluaran;
-            const kasAkhir = currentModalAwal - currentTotalPengeluaran + currentTotalPenjualan;
-
-            if (document.getElementById('cardModal')) document.getElementById('cardModal').innerText = formatIDR(currentModalAwal);
-            if (document.getElementById('cardPengeluaran')) document.getElementById('cardPengeluaran').innerText = formatIDR(currentTotalPengeluaran);
-            if (document.getElementById('cardPenjualan')) document.getElementById('cardPenjualan').innerText = formatIDR(currentTotalPenjualan);
-            if (document.getElementById('cardMargin')) document.getElementById('cardMargin').innerText = `Laba Bersih: ${formatIDR(currentLabaBersih)}`;
-            if (document.getElementById('cardKasAkhir')) document.getElementById('cardKasAkhir').innerText = formatIDR(kasAkhir);
         });
+    }
+
+    currentLabaBersih = currentTotalPenjualan - currentTotalPengeluaran;
+    const kasAkhir = currentModalAwal - currentTotalPengeluaran + currentTotalPenjualan;
+
+    if (document.getElementById('cardModal')) document.getElementById('cardModal').innerText = formatIDR(currentModalAwal);
+    if (document.getElementById('cardPengeluaran')) document.getElementById('cardPengeluaran').innerText = formatIDR(currentTotalPengeluaran);
+    if (document.getElementById('cardPenjualan')) document.getElementById('cardPenjualan').innerText = formatIDR(currentTotalPenjualan);
+    if (document.getElementById('cardMargin')) document.getElementById('cardMargin').innerText = `Laba Bersih: ${formatIDR(currentLabaBersih)}`;
+    if (document.getElementById('cardKasAkhir')) document.getElementById('cardKasAkhir').innerText = formatIDR(kasAkhir);
+});
     </script>
 </body>
 </html>
