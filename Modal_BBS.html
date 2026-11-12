@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kas Mobile - PT. BBS</title>
+    <title>Rekapan KAS - PT. BBS</title>
 
     <!-- Warna status bar / address bar di browser mobile -->
     <meta name="theme-color" content="#0F172A">
@@ -181,42 +181,48 @@
     </div>
 
     <!-- 2. Form Input -->
-    <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md">
-        <h2 id="formTitle" class="text-lg font-bold text-white mb-4">Input Transaksi</h2>
-        
-        <form id="txForm" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
-            <!-- Jenis Transaksi -->
-            <div class="lg:col-span-3">
-                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Jenis Transaksi</label>
-                <select id="txType" class="w-full border border-slate-700 bg-slate-900 px-3.5 py-2.5 rounded-xl font-bold text-white transition-all outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option value="pengeluaran" class="bg-slate-900 text-white">PENGELUARAN</option>
-                    <option value="penjualan" class="bg-slate-900 text-white">I N V O I C E</option>
-                </select>
-            </div>
+<div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md">
+    <h2 id="formTitle" class="text-lg font-bold text-white mb-4">Input Transaksi</h2>
+    
+    <form id="txForm" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+        <!-- Tanggal Transaksi -->
+        <div class="lg:col-span-2">
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tanggal</label>
+            <input type="date" id="txDate" required class="w-full border border-slate-700 bg-slate-900/80 text-white px-3 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm [color-scheme:dark]">
+        </div>
 
-            <!-- Keterangan / Item -->
-            <div class="lg:col-span-4">
-                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Keterangan / Item</label>
-                <input type="text" id="txDesc" required placeholder="Contoh: Pembelian Besi Plat 500 Pcs" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
-            </div>
+        <!-- Jenis Transaksi -->
+        <div class="lg:col-span-2">
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Jenis Transaksi</label>
+            <select id="txType" class="w-full border border-slate-700 bg-slate-900 px-3.5 py-2.5 rounded-xl font-bold text-white transition-all outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <option value="pengeluaran" class="bg-slate-900 text-white">PENGELUARAN</option>
+                <option value="penjualan" class="bg-slate-900 text-white">I N V O I C E</option>
+            </select>
+        </div>
 
-            <!-- Nominal (Rp) -->
-            <div class="lg:col-span-3">
-                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal (Rp)</label>
-                <input type="text" inputmode="numeric" id="txAmount" required placeholder="Contoh: 45,000,000" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm font-medium">
-            </div>
+        <!-- Keterangan / Item -->
+        <div class="lg:col-span-4">
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Keterangan / Item</label>
+            <input type="text" id="txDesc" required placeholder="Contoh: Pembelian Besi Plat 500 Pcs" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
+        </div>
 
-            <!-- Tombol Aksi -->
-            <div class="lg:col-span-2 flex gap-2">
-                <button type="submit" id="btnSubmit" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl transition shadow-md text-sm whitespace-nowrap">
-                    + Simpan Transaksi
-                </button>
-                <button type="button" id="btnCancelEdit" onclick="cancelEdit()" class="hidden bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2.5 rounded-xl transition text-sm">
-                    Batal
-                </button>
-            </div>
-        </form>
-    </div>
+        <!-- Nominal (Rp) -->
+        <div class="lg:col-span-2">
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal (Rp)</label>
+            <input type="text" inputmode="numeric" id="txAmount" required placeholder="Contoh: 45,000,000" class="w-full border border-slate-700 bg-slate-900/80 text-white placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm font-medium">
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="lg:col-span-2 flex gap-2">
+            <button type="submit" id="btnSubmit" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl transition shadow-md text-sm whitespace-nowrap">
+                + Simpan
+            </button>
+            <button type="button" id="btnCancelEdit" onclick="cancelEdit()" class="hidden bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2.5 rounded-xl transition text-sm">
+                Batal
+            </button>
+        </div>
+    </form>
+</div>
 
     <!-- 3. Tabel Riwayat -->
     <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-md">
@@ -360,6 +366,18 @@
             updateDropdownColor();
         }
 
+    // Helper: Set Tanggal ke Hari Ini (YYYY-MM-DD)
+        const inputDate = document.getElementById('txDate');
+        const setTodayDate = () => {
+            if (inputDate) {
+                const today = new Date().toISOString().split('T')[0];
+                inputDate.value = today;
+            }
+        };
+        
+        // Inisialisasi tanggal default ke hari ini saat script berjalan
+        setTodayDate();
+
         // 2. FITUR PASSWORD MODAL AWAL
         const inputModal = document.getElementById('inputModalAwal');
         const btnUnlock = document.getElementById('btnUnlockModal');
@@ -410,16 +428,18 @@
         if (txForm) {
             txForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                const date = inputDate ? inputDate.value : new Date().toISOString().split('T')[0];
                 const type = txTypeSelect ? txTypeSelect.value : '';
                 const desc = document.getElementById('txDesc').value.trim();
                 const amount = parseRawNumber(inputAmount.value);
 
-                if (!desc || isNaN(amount) || amount <= 0) return;
+                if (!date || !desc || isNaN(amount) || amount <= 0) return;
 
                 if (editingKey) {
                     // Mode Update
                     const itemRef = ref(db, `sistem_kas/transaksi/${editingKey}`);
                     update(itemRef, {
+                        date,
                         type,
                         desc,
                         amount,
@@ -430,6 +450,7 @@
                 } else {
                     // Mode Tambah Baru
                     push(transaksiRef, {
+                        date,
                         type,
                         desc,
                         amount,
@@ -437,12 +458,13 @@
                     }).then(() => {
                         document.getElementById('txDesc').value = '';
                         if (inputAmount) inputAmount.value = '';
+                        setTodayDate(); // Reset input tanggal ke hari ini setelah simpan
                     });
                 }
             });
         }
 
-        window.editTx = (key, desc, type, amount) => {
+        window.editTx = (key, desc, type, amount, date) => {
             editingKey = key;
             const formTitle = document.getElementById('formTitle');
             const txDesc = document.getElementById('txDesc');
@@ -450,6 +472,7 @@
             const btnCancelEdit = document.getElementById('btnCancelEdit');
 
             if (formTitle) formTitle.innerText = "Edit Transaksi";
+            if (inputDate && date) inputDate.value = date;
             if (txDesc) txDesc.value = desc;
             if (txTypeSelect) {
                 txTypeSelect.value = type;
@@ -473,6 +496,7 @@
             if (formTitle) formTitle.innerText = "Input Transaksi";
             if (txDesc) txDesc.value = '';
             if (inputAmount) inputAmount.value = '';
+            setTodayDate(); // Reset tanggal ke hari ini
             if (btnSubmit) {
                 btnSubmit.innerText = "+ Simpan Transaksi";
                 btnSubmit.className = "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition shadow-sm";
@@ -541,6 +565,22 @@ window.processDownloadPDF = () => {
     let headerSubTitle = "PT. BERKAH BAJA STEEL";
     let reportTitle = "LAPORAN KAS";
 
+    // Helper untuk mengekstrak string YYYY-MM-DD dari transaksi
+    const getTxDateStr = (t) => {
+        const rawDate = t.date || t.createdAt || t.updatedAt;
+        if (!rawDate) return null;
+
+        // Jika format sudah "YYYY-MM-DD" (dari input manual)
+        if (typeof rawDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(rawDate)) {
+            return rawDate;
+        }
+
+        // Jika berupa timestamp atau ISO string
+        const d = new Date(rawDate);
+        if (isNaN(d.getTime())) return null;
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    };
+
     // 1. FILTER HARIAN (YYYY-MM-DD)
     if (selectedDownloadOption === 'daily') {
         const selectedDateVal = document.getElementById('filterTanggalPDF').value;
@@ -550,10 +590,7 @@ window.processDownloadPDF = () => {
         }
 
         filteredList = transactionsList.filter(t => {
-            const rawDate = t.createdAt || t.updatedAt;
-            if (!rawDate) return false;
-            const d = new Date(rawDate);
-            const dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+            const dateStr = getTxDateStr(t);
             return dateStr === selectedDateVal;
         });
 
@@ -562,7 +599,7 @@ window.processDownloadPDF = () => {
             return;
         }
 
-        const dateObj = new Date(selectedDateVal);
+        const dateObj = new Date(selectedDateVal + 'T00:00:00');
         const dateFormatted = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         
         reportTitle = "LAPORAN KAS HARIAN";
@@ -577,10 +614,9 @@ window.processDownloadPDF = () => {
         }
 
         filteredList = transactionsList.filter(t => {
-            const rawDate = t.createdAt || t.updatedAt;
-            if (!rawDate) return false;
-            const d = new Date(rawDate);
-            const monthStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+            const dateStr = getTxDateStr(t);
+            if (!dateStr) return false;
+            const monthStr = dateStr.substring(0, 7); // Ambil YYYY-MM
             return monthStr === selectedMonthVal;
         });
 
@@ -590,7 +626,7 @@ window.processDownloadPDF = () => {
         }
 
         const [yearStr, monthNumStr] = selectedMonthVal.split('-');
-        const monthDateObj = new Date(yearStr, parseInt(monthNumStr) - 1, 1);
+        const monthDateObj = new Date(parseInt(yearStr), parseInt(monthNumStr) - 1, 1);
         const monthFormatted = monthDateObj.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
 
         reportTitle = "LAPORAN KAS BULANAN";
@@ -727,7 +763,13 @@ window.processDownloadPDF = () => {
 function formatTanggalDenganHari(tanggalStr) {
     if (!tanggalStr) return '-';
     
-    const d = new Date(tanggalStr);
+    // Jika format 'YYYY-MM-DD', tambahkan 'T00:00:00' agar tanggal tidak bergeser karena perbedaan timezone UTC
+    let d;
+    if (typeof tanggalStr === 'string' && tanggalStr.includes('-') && !tanggalStr.includes('T')) {
+        d = new Date(tanggalStr + 'T00:00:00');
+    } else {
+        d = new Date(tanggalStr);
+    }
     
     // Jika format tanggal valid
     if (!isNaN(d.getTime())) {
@@ -778,8 +820,9 @@ onValue(rootRef, (snapshot) => {
             if (t.type === 'pengeluaran') currentTotalPengeluaran += t.amount;
             if (t.type === 'penjualan') currentTotalPenjualan += t.amount;
 
-            // Menggunakan fungsi formatTanggalDenganHari agar muncul nama harinya
-            const tglFormatted = formatTanggalDenganHari(t.createdAt || t.updatedAt);
+            // Prioritaskan t.date (tanggal manual), jika tidak ada baru gunakan createdAt/updatedAt
+            const rawDate = t.date || t.createdAt || t.updatedAt;
+            const tglFormatted = formatTanggalDenganHari(rawDate);
 
             const row = document.createElement('tr');
             row.className = "hover:bg-slate-700/30 border-b border-slate-700/60";
@@ -797,7 +840,7 @@ onValue(rootRef, (snapshot) => {
         ${t.type === 'penjualan' ? '+' : '-'} ${formatIDR(t.amount)}
     </td>
     <td class="p-3.5 text-center">
-        <button onclick="editTx('${key}', '${t.desc.replace(/'/g, "\\'")}', '${t.type}', ${t.amount})" class="text-indigo-400 hover:text-indigo-300 text-xs font-bold mr-2">Edit</button>
+        <button onclick="editTx('${key}', '${t.desc.replace(/'/g, "\\'")}', '${t.type}', ${t.amount}, '${t.date || ''}')" class="text-indigo-400 hover:text-indigo-300 text-xs font-bold mr-2">Edit</button>
         <button onclick="deleteTx('${key}')" class="text-rose-400 hover:text-rose-300 text-xs font-bold">Hapus</button>
     </td>
 `;
