@@ -667,9 +667,9 @@ window.processDownloadPDF = () => {
     const today = new Date();
     const todayFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    // Tabel Transaksi Periode Terpilih
+    // Tabel Transaksi Periode Terpilih (Prioritaskan t.date agar sesuai input manual)
     const tableBody = filteredList.map(t => [
-        formatDate(t.createdAt || t.updatedAt),
+        formatDate(t.date || t.createdAt || t.updatedAt),
         t.desc,
         t.type === 'penjualan' ? 'INVOICE / Pendapatan' : 'Pengeluaran',
         t.type === 'penjualan' ? '+ Rp.' : '- Rp.',
@@ -698,15 +698,30 @@ window.processDownloadPDF = () => {
     });
 
     let finalY = doc.lastAutoTable.finalY + 8;
-    if (finalY > 210) {
+    if (finalY > 195) {
         doc.addPage();
         finalY = 20;
     }
 
     // Hitung Ringkasan Keuangan Periode Terpilih
-    const subPengeluaran = filteredList.filter(t => t.type !== 'penjualan').reduce((sum, t) => sum + Number(t.amount || 0), 0);
-    const subPenjualan = filteredList.filter(t => t.type === 'penjualan').reduce((sum, t) => sum + Number(t.amount || 0), 0);
+    const subPengeluaran = filteredList
+        .filter(t => t.type !== 'penjualan')
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
+    const subPenjualan = filteredList
+        .filter(t => t.type === 'penjualan')
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
     const subLaba = subPenjualan - subPengeluaran;
+
+    // Hitung Total Pengeluaran Atas Nama YEFRY & DIRUT pada periode terpilih
+    const subTotalYefry = filteredList
+        .filter(t => t.type === 'pengeluaran' && (t.desc || '').toLowerCase().includes('yefry'))
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
+    const subTotalDirut = filteredList
+        .filter(t => t.type === 'pengeluaran' && (t.desc || '').toLowerCase().includes('dirut'))
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
 
     // SALDO / KAS AKHIR: Mengambil data Kas Akhir Sistem langsung dari variabel onValue (kasAkhir)
     const saldoKasAkhirOnValue = currentModalAwal - currentTotalPengeluaran + currentTotalPenjualan;
@@ -717,6 +732,8 @@ window.processDownloadPDF = () => {
         [`TOTAL PENGELUARAN ${labelSuffix}`, 'Rp.', formatNumberOnly(subPengeluaran)],
         [`TOTAL PENJUALAN ${labelSuffix}`, 'Rp.', formatNumberOnly(subPenjualan)],
         [`LABA BERSIH ${labelSuffix}`, 'Rp.', formatNumberOnly(subLaba)],
+        [`TOTAL YEFRY`, 'Rp.', formatNumberOnly(subTotalYefry)],
+        [`TOTAL DIRUT`, 'Rp.', formatNumberOnly(subTotalDirut)],
         [`SALDO BCA DIRUT`, 'Rp.', formatNumberOnly(saldoKasAkhirOnValue)]
     ];
 
