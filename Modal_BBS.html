@@ -184,14 +184,14 @@
 <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
     <!-- KIRI: YEFRY -->
     <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl">
-        <div class="text-xs text-slate-400 font-medium">Pengeluaran Atas Nama YEFRY</div>
+        <div class="text-xs text-slate-400 font-medium">Pengeluaran YEFRY.ZA</div>
         <div id="cardPengeluaranYefry" class="text-lg sm:text-xl font-bold text-rose-400 mt-1">Rp 0</div>
         <div id="cardCountYefry" class="text-[11px] text-slate-400 mt-1">0 transaksi</div>
     </div>
 
     <!-- KANAN: DIRUT -->
     <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-xl">
-        <div class="text-xs text-slate-400 font-medium">Pengeluaran Atas Nama DIRUT</div>
+        <div class="text-xs text-slate-400 font-medium">Pengeluaran ABAH</div>
         <div id="cardPengeluaranDirut" class="text-lg sm:text-xl font-bold text-rose-400 mt-1">Rp 0</div>
         <div id="cardCountDirut" class="text-[11px] text-slate-400 mt-1">0 transaksi</div>
     </div>
@@ -733,8 +733,8 @@ window.processDownloadPDF = () => {
         [`TOTAL PENJUALAN ${labelSuffix}`, 'Rp.', formatNumberOnly(subPenjualan)],
         [`LABA BERSIH ${labelSuffix}`, 'Rp.', formatNumberOnly(subLaba)],
         [`TOTAL YEFRY`, 'Rp.', formatNumberOnly(subTotalYefry)],
-        [`TOTAL DIRUT`, 'Rp.', formatNumberOnly(subTotalDirut)],
-        [`SALDO BCA DIRUT`, 'Rp.', formatNumberOnly(saldoKasAkhirOnValue)]
+        [`TOTAL ABAH`, 'Rp.', formatNumberOnly(subTotalDirut)],
+        [`SALDO BCA`, 'Rp.', formatNumberOnly(saldoKasAkhirOnValue)]
     ];
 
     // Tabel Ringkasan Keuangan
@@ -951,3 +951,4 @@ onValue(rootRef, (snapshot) => {
     </script>
 </body>
 </html>
+
